@@ -1,5 +1,6 @@
 package com.example.demo.user.entity;
 
+import com.example.demo.company.entity.Company;
 import com.example.demo.person.entity.Person;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,4 +29,5 @@ public class User {
     
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Person person;
+
 }

@@ -1,13 +1,12 @@
 package com.example.demo.person.service;
 
+import com.example.demo.company.CompanyRepository;
+import com.example.demo.company.entity.Company;
+import com.example.demo.person.dto.*;
 import com.example.demo.shared.Exception.DuplicateResourceException;
 import com.example.demo.shared.Exception.ResourceNotFoundException;
-import com.example.demo.person.dto.CreatePersonDto;
-import com.example.demo.person.dto.ResponsePersonDto;
-import com.example.demo.person.dto.UpdatePersonDto;
 import com.example.demo.person.entity.Person;
 import com.example.demo.person.PersonRepository;
-import com.example.demo.person.dto.PersonMapper;
 import com.example.demo.user.entity.User;
 import com.example.demo.user.UserRepository;
 import org.springframework.stereotype.Service;
@@ -20,11 +19,13 @@ public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
     private final PersonMapper personMapper;
     private final UserRepository userRepository;
+    private final CompanyRepository companyRepository;
 
-    public PersonServiceImpl(PersonRepository personRepository, PersonMapper personMapper, UserRepository userRepository) {
+    public PersonServiceImpl(PersonRepository personRepository, PersonMapper personMapper, UserRepository userRepository, CompanyRepository companyRepository) {
         this.personRepository = personRepository;
         this.personMapper = personMapper;
         this.userRepository = userRepository;
+        this.companyRepository = companyRepository;
     }
 
     @Override
@@ -69,7 +70,16 @@ public class PersonServiceImpl implements PersonService {
         if (personDto.getUserId() != null) {
             User user = userRepository.findById(personDto.getUserId())
                     .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user"));
+            if(user.getPerson() != null) {
+                throw new DuplicateResourceException("User đã có person");
+            }
             person.setUser(user);
+        }
+
+        if (personDto.getCompanyId() != null) {
+            Company company = companyRepository.findById(personDto.getCompanyId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy company"));
+            person.setCompany(company);
         }
         
         Person saved = personRepository.save(person);
@@ -100,6 +110,16 @@ public class PersonServiceImpl implements PersonService {
         ResponsePersonDto dto = personMapper.toDTO(person);
         personRepository.delete(person);
         return dto;
+    }
+
+    @Override
+    public ResponsePersonDto assignCompany(AssignCompanyDto dto) {
+        Person person = personRepository.findById(dto.getPersonId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy person"));
+        Company company = companyRepository.findById(dto.getCompanyId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy company"));
+        person.setCompany(company);
+        return personMapper.toDTO(personRepository.save(person));
     }
 
     @Override

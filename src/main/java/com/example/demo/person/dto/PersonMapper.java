@@ -22,6 +22,7 @@ public class PersonMapper {
                 .phoneNumber(person.getPhoneNumber())
                 .address(person.getAddress())
                 .userId(person.getUser() != null ? person.getUser().getId() : null)
+                .companyId(person.getCompany() != null ? person.getCompany().getId() : null)
                 .build();
     }
 

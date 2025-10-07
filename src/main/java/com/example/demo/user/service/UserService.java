@@ -16,6 +16,7 @@ public interface UserService {
     ResponseUserDto createUser(CreateUserDto user);
     ResponseUserDto updateUser(UpdateUserDto user);
     ResponseUserDto deleteUserById(Long id);
+
     boolean existsUserById(Long id);
     boolean existsUserByEmail(String email);
 }

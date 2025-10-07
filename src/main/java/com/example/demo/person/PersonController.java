@@ -1,5 +1,6 @@
 package com.example.demo.person;
 
+import com.example.demo.person.dto.AssignCompanyDto;
 import com.example.demo.person.dto.CreatePersonDto;
 import com.example.demo.person.dto.ResponsePersonDto;
 import com.example.demo.person.dto.UpdatePersonDto;
@@ -57,6 +58,17 @@ public class PersonController {
                         .success(true)
                         .message("Xóa person thành công")
                         .data(deleted)
+                        .build());
+    }
+
+    @PutMapping("/assign-company")
+    public ResponseEntity<ApiResponse<ResponsePersonDto>> assignCompany(@Valid @RequestBody AssignCompanyDto assignCompanyDto){
+        ResponsePersonDto assigned = personService.assignCompany(assignCompanyDto);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<ResponsePersonDto>builder()
+                        .success(true)
+                        .message("Gán công ty thành công")
+                        .data(assigned)
                         .build());
     }
 

@@ -1,5 +1,6 @@
 package com.example.demo.person.service;
 
+import com.example.demo.person.dto.AssignCompanyDto;
 import com.example.demo.person.dto.CreatePersonDto;
 import com.example.demo.person.dto.ResponsePersonDto;
 import com.example.demo.person.dto.UpdatePersonDto;
@@ -15,6 +16,7 @@ public interface PersonService {
     ResponsePersonDto createPerson(CreatePersonDto person);
     ResponsePersonDto updatePerson(UpdatePersonDto person);
     ResponsePersonDto deletePersonById(Long id);
+    ResponsePersonDto assignCompany(AssignCompanyDto dto);
     boolean existsPersonById(Long id);
     boolean existsPersonByPhoneNumber(String phoneNumber);
 }

@@ -1,5 +1,6 @@
 package com.example.demo.person.entity;
 
+import com.example.demo.company.entity.Company;
 import com.example.demo.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,6 +34,10 @@ public class Person {
     
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     User user;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    Company company;
 }

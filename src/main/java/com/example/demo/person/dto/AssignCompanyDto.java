@@ -1,8 +1,9 @@
 package com.example.demo.person.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
 import lombok.experimental.FieldDefaults;
+
 import java.time.LocalDate;
 
 @Data()
@@ -10,13 +11,9 @@ import java.time.LocalDate;
 @AllArgsConstructor()
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ResponsePersonDto {
-    Long id;
-    String fullName;
-    String gender;
-    LocalDate birthDate;
-    String phoneNumber;
-    String address;
-    Long userId;
+public class AssignCompanyDto {
+    @NotNull(message = "Person ID không được để trống")
+    Long personId;
+    @NotNull(message = "Comapny ID không được để trống")
     Long companyId;
 }

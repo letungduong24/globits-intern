@@ -27,4 +27,6 @@ public class CreatePersonDto {
 
     @NotNull(message = "ID không được để trống")
     Long userId;
+
+    Long companyId;
 }
