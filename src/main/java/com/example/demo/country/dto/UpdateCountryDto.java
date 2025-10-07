@@ -1,5 +1,6 @@
 package com.example.demo.country.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateCountryDto {
+    @NotNull(message = "ID không được để trống")
     Long id;
     String name;
     String description;

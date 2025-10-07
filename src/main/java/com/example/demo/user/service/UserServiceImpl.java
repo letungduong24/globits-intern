@@ -2,12 +2,9 @@ package com.example.demo.user.service;
 
 import com.example.demo.shared.Exception.DuplicateResourceException;
 import com.example.demo.shared.Exception.ResourceNotFoundException;
-import com.example.demo.user.dto.CreateUserDto;
-import com.example.demo.user.dto.ResponseUserDto;
-import com.example.demo.user.dto.UpdateUserDto;
-import com.example.demo.user.dto.UserMapper;
+import com.example.demo.user.dto.*;
 import com.example.demo.user.entity.User;
-import com.example.demo.user.repository.UserRepository;
+import com.example.demo.user.UserRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -30,21 +27,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseUserDto getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user với id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user"));
         return userMapper.toDTO(user);
     }
 
     @Override
     public ResponseUserDto getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user với email: " + email));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user"));
         return userMapper.toDTO(user);
+    }
+
+    @Override
+    public ResponseUserWithPersonDto getUserWithPersonById(Long id) {
+        User user = userRepository.findWithPersonById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user"));
+        return userMapper.toDTOWithPerson(user);
+    }
+
+    @Override
+    public ResponseUserWithPersonDto getUserWithPersonByEmail(String email) {
+        User user = userRepository.findWithPersonByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user"));
+        return userMapper.toDTOWithPerson(user);
     }
 
     @Override
     public ResponseUserDto createUser(CreateUserDto userDto) {
         if (userRepository.existsByEmail(userDto.getEmail())) {
-            throw new DuplicateResourceException("Email đã tồn tại: " + userDto.getEmail());
+            throw new DuplicateResourceException("Email đã tồn tại");
         }
         
         User user = userMapper.toEntity(userDto);
@@ -55,11 +66,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseUserDto updateUser(UpdateUserDto userDto) {
         User user = userRepository.findById(userDto.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user với id: " + userDto.getId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user"));
         
         if (userDto.getEmail() != null && !userDto.getEmail().equals(user.getEmail())) {
             if (userRepository.existsByEmail(userDto.getEmail())) {
-                throw new DuplicateResourceException("Email đã tồn tại: " + userDto.getEmail());
+                throw new DuplicateResourceException("Email đã tồn tại");
             }
             user.setEmail(userDto.getEmail());
         }
@@ -79,7 +90,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseUserDto deleteUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user với id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user"));
 
         ResponseUserDto dto = userMapper.toDTO(user);
         userRepository.delete(user);

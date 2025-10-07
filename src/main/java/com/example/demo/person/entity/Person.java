@@ -16,7 +16,6 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Person {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     
     @Column(name = "full_name", nullable = false)

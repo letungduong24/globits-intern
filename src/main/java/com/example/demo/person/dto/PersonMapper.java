@@ -49,7 +49,26 @@ public class PersonMapper {
                 .build();
     }
 
+    public PersonBasicDto toBasicDTO(Person person) {
+        if (person == null) {
+            return null;
+        }
+        
+        return PersonBasicDto.builder()
+                .id(person.getId())
+                .fullName(person.getFullName())
+                .gender(person.getGender())
+                .birthDate(person.getBirthDate())
+                .phoneNumber(person.getPhoneNumber())
+                .address(person.getAddress())
+                .build();
+    }
+
     public Person updateEntity(Person existingPerson, UpdatePersonDto updateDto) {
+        if (existingPerson == null || updateDto == null) {
+            return existingPerson;
+        }
+        
         if (updateDto.getFullName() != null) {
             existingPerson.setFullName(updateDto.getFullName());
         }

@@ -1,7 +1,7 @@
 package com.example.demo.person.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import lombok.experimental.FieldDefaults;
@@ -24,6 +24,7 @@ public class CreatePersonDto {
     String phoneNumber;
     
     String address;
-    
+
+    @NotNull(message = "ID không được để trống")
     Long userId;
 }

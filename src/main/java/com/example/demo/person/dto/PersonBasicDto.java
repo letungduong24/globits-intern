@@ -1,6 +1,5 @@
 package com.example.demo.person.dto;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import lombok.experimental.FieldDefaults;
@@ -11,8 +10,7 @@ import java.time.LocalDate;
 @AllArgsConstructor()
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdatePersonDto {
-    @NotNull(message = "ID không được để trống")
+public class PersonBasicDto {
     Long id;
     String fullName;
     String gender;

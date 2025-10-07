@@ -1,7 +1,6 @@
 package com.example.demo.user.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Data
@@ -9,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class UpdateUserDto {
+    @NotNull(message = "ID không được để trống")
     Long id;
     
     @Email(message = "Email không hợp lệ")

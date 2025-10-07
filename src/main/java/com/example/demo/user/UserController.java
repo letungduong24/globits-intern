@@ -2,6 +2,7 @@ package com.example.demo.user;
 
 import com.example.demo.user.dto.CreateUserDto;
 import com.example.demo.user.dto.ResponseUserDto;
+import com.example.demo.user.dto.ResponseUserWithPersonDto;
 import com.example.demo.user.dto.UpdateUserDto;
 import com.example.demo.user.service.UserService;
 import com.example.demo.shared.ApiResponse;
@@ -65,8 +66,18 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @GetMapping("/email/{email}")
+    @GetMapping("/{email}/by-email")
     public ResponseUserDto getUserByEmail(@PathVariable String email){
         return userService.getUserByEmail(email);
+    }
+
+    @GetMapping("/with-person/{id}")
+    public ResponseUserWithPersonDto getUserWithPersonById(@PathVariable Long id){
+        return userService.getUserWithPersonById(id);
+    }
+
+    @GetMapping("/with-person/{email}/by-email")
+    public ResponseUserWithPersonDto getUserWithPersonByEmail(@PathVariable String email){
+        return userService.getUserWithPersonByEmail(email);
     }
 }

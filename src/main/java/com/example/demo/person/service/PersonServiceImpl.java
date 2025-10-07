@@ -9,7 +9,7 @@ import com.example.demo.person.entity.Person;
 import com.example.demo.person.PersonRepository;
 import com.example.demo.person.dto.PersonMapper;
 import com.example.demo.user.entity.User;
-import com.example.demo.user.repository.UserRepository;
+import com.example.demo.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
