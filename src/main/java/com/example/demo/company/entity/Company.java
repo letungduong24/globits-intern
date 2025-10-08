@@ -1,5 +1,6 @@
 package com.example.demo.company.entity;
 
+import com.example.demo.department.entity.Department;
 import com.example.demo.person.entity.Person;
 import com.example.demo.user.entity.User;
 import jakarta.persistence.*;
@@ -30,4 +31,7 @@ public class Company {
 
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     Set<Person> persons;
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    Set<Department> departments;
 }
