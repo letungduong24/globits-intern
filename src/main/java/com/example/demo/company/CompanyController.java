@@ -4,6 +4,7 @@ import com.example.demo.company.dto.CreateCompanyDto;
 import com.example.demo.company.dto.ResponseCompanyDto;
 import com.example.demo.company.dto.UpdateCompanyDto;
 import com.example.demo.company.service.CompanyService;
+import com.example.demo.country.dto.ResponseCountryDto;
 import com.example.demo.shared.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,8 +24,14 @@ public class CompanyController {
     }
 
     @GetMapping()
-    public List<ResponseCompanyDto> getCompanies(){
-        return companyService.getAllCompanies();
+    public ResponseEntity<ApiResponse<List<ResponseCompanyDto>>> getCompanies(){
+        List<ResponseCompanyDto> countries = companyService.getAllCompanies();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<List<ResponseCompanyDto>>builder()
+                        .success(true)
+                        .message("Lấy companies thành công")
+                        .data(countries)
+                        .build());
     }
 
     @PostMapping()
@@ -61,17 +68,35 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseCompanyDto getCompanyById(@PathVariable Long id){
-        return companyService.getCompanyById(id);
+    public ResponseEntity<ApiResponse<ResponseCompanyDto>> getCompanyById(@PathVariable Long id){
+        ResponseCompanyDto company = companyService.getCompanyById(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<ResponseCompanyDto>builder()
+                        .success(true)
+                        .message("Lấy company thành công")
+                        .data(company)
+                        .build());
     }
 
     @GetMapping("/{name}/by-name")
-    public List<ResponseCompanyDto> getCompaniesByName(@PathVariable String name){
-        return companyService.getCompaniesByName(name);
+    public ResponseEntity<ApiResponse<List<ResponseCompanyDto>>> getCompaniesByName(@PathVariable String name){
+        List<ResponseCompanyDto> companies = companyService.getCompaniesByName(name);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<List<ResponseCompanyDto>>builder()
+                        .success(true)
+                        .message("Lấy companies thành công")
+                        .data(companies)
+                        .build());
     }
 
     @GetMapping("/{code}/by-code")
-    public ResponseCompanyDto getCompanyByCode(@PathVariable String code){
-        return companyService.getCompanyByCode(code);
+    public ResponseEntity<ApiResponse<ResponseCompanyDto>> getCompanyByCode(@PathVariable String code){
+        ResponseCompanyDto company = companyService.getCompanyByCode(code);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<ResponseCompanyDto>builder()
+                        .success(true)
+                        .message("Lấy company thành công")
+                        .data(company)
+                        .build());
     }
 }

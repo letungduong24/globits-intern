@@ -1,9 +1,6 @@
 package com.example.demo.user.service;
 
-import com.example.demo.user.dto.CreateUserDto;
-import com.example.demo.user.dto.ResponseUserDto;
-import com.example.demo.user.dto.ResponseUserWithPersonDto;
-import com.example.demo.user.dto.UpdateUserDto;
+import com.example.demo.user.dto.*;
 
 import java.util.List;
 
@@ -16,7 +13,8 @@ public interface UserService {
     ResponseUserDto createUser(CreateUserDto user);
     ResponseUserDto updateUser(UpdateUserDto user);
     ResponseUserDto deleteUserById(Long id);
-
     boolean existsUserById(Long id);
     boolean existsUserByEmail(String email);
+    ResponseUserDto assignRole(AssignRoleDto assignRoleDto);
+    ResponseUserDto removeRole(AssignRoleDto assignRoleDto);
 }

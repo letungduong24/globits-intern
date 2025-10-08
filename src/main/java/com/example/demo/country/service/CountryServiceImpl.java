@@ -72,15 +72,7 @@ public class CountryServiceImpl implements CountryService {
             throw new DuplicateResourceException("Code đã tồn tại");
         }
 
-        if (countryDto.getName() != null) {
-            country.setName(countryDto.getName());
-        }
-        if (countryDto.getCode() != null) {
-            country.setCode(countryDto.getCode());
-        }
-        if(countryDto.getDescription() != null) {
-            country.setDescription(countryDto.getDescription());
-        }
+        countryMapper.updateEntity(country, countryDto);
         countryRepository.save(country);
         return countryMapper.toDTO(country);
     }

@@ -24,13 +24,25 @@ public class CountryController {
     }
 
     @GetMapping()
-    public List<ResponseCountryDto> getCountries(){
-        return countryService.getAllCountries();
+    public ResponseEntity<ApiResponse<List<ResponseCountryDto>>> getCountries(){
+        List<ResponseCountryDto> countries = countryService.getAllCountries();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<List<ResponseCountryDto>>builder()
+                        .success(true)
+                        .message("Lấy countries thành công")
+                        .data(countries)
+                        .build());
     }
 
     @GetMapping("/{name}/by-name")
-    public List<ResponseCountryDto> getCountriesByName(@PathVariable String name){
-        return countryService.getCountriesByName(name);
+    public ResponseEntity<ApiResponse<List<ResponseCountryDto>>> getCountriesByName(@PathVariable String name){
+        List<ResponseCountryDto> countries = countryService.getCountriesByName(name);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<List<ResponseCountryDto>>builder()
+                        .success(true)
+                        .message("Lấy countries thành công")
+                        .data(countries)
+                        .build());
     }
 
     @PostMapping()
@@ -68,13 +80,25 @@ public class CountryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseCountryDto getCountryById(@PathVariable Long id){
-        return countryService.getCountryById(id);
+    public ResponseEntity<ApiResponse<ResponseCountryDto>> getCountryById(@PathVariable Long id){
+        ResponseCountryDto country = countryService.getCountryById(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<ResponseCountryDto>builder()
+                        .success(true)
+                        .message("Lấy country thành công")
+                        .data(country)
+                        .build());
     }
 
     @GetMapping("/{code}/by-code")
-    public ResponseCountryDto getCountryByCode(@PathVariable String code){
-        return countryService.getCountryByCode(code);
+    public ResponseEntity<ApiResponse<ResponseCountryDto>> getCountryByCode(@PathVariable String code){
+        ResponseCountryDto country = countryService.getCountryByCode(code);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<ResponseCountryDto>builder()
+                        .success(true)
+                        .message("Lấy country thành công")
+                        .data(country)
+                        .build());
     }
 
 

@@ -20,3 +20,4 @@ public class ResponsePersonDto {
     Long userId;
     Long companyId;
 }
+

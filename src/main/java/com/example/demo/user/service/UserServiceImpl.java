@@ -1,22 +1,28 @@
 package com.example.demo.user.service;
 
+import com.example.demo.role.RoleRepository;
+import com.example.demo.role.entity.Role;
 import com.example.demo.shared.Exception.DuplicateResourceException;
 import com.example.demo.shared.Exception.ResourceNotFoundException;
 import com.example.demo.user.dto.*;
 import com.example.demo.user.entity.User;
 import com.example.demo.user.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final UserMapper userMapper;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper,  RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -97,6 +103,8 @@ public class UserServiceImpl implements UserService {
         return dto;
     }
 
+
+
     @Override
     public boolean existsUserById(Long id) {
         return userRepository.existsById(id);
@@ -105,5 +113,42 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsUserByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    @Transactional
+    public ResponseUserDto assignRole(AssignRoleDto assignRoleDto) {
+        User user = userRepository.findById(assignRoleDto.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user"));
+
+        Role role = roleRepository.findById(assignRoleDto.getRoleId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy role"));
+
+        if (user.getRoles() != null && user.getRoles().contains(role)) {
+            throw new DuplicateResourceException("User đã có role này");
+        }
+
+        user.getRoles().add(role);
+
+        User savedUser = userRepository.save(user);
+        return userMapper.toDTO(savedUser);
+    }
+
+    @Override
+    public ResponseUserDto removeRole(AssignRoleDto assignRoleDto) {
+        User user = userRepository.findById(assignRoleDto.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user"));
+
+        Role role = roleRepository.findById(assignRoleDto.getRoleId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy role"));
+
+        if (user.getRoles() == null || !user.getRoles().contains(role)) {
+            throw new ResourceNotFoundException("User không có role này");
+        }
+
+        user.getRoles().remove(role);
+
+        User savedUser = userRepository.save(user);
+        return userMapper.toDTO(savedUser);
     }
 }

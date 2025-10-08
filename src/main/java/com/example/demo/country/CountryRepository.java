@@ -10,6 +10,5 @@ import java.util.Optional;
 public interface CountryRepository extends JpaRepository<Country, Long> {
     Optional<Country> findByCode(String code);
     List<Country> findByNameContainingIgnoreCase(String name);
-
     boolean existsByCodeAndIdNot(String code, Long id);
 }

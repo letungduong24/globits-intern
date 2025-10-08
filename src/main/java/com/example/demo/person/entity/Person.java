@@ -37,7 +37,7 @@ public class Person {
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 
-    @ManyToOne
+    @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "company_id")
     Company company;
 }

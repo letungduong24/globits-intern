@@ -1,5 +1,6 @@
 package com.example.demo.person;
 
+import com.example.demo.country.dto.ResponseCountryDto;
 import com.example.demo.person.dto.AssignCompanyDto;
 import com.example.demo.person.dto.CreatePersonDto;
 import com.example.demo.person.dto.ResponsePersonDto;
@@ -24,8 +25,14 @@ public class PersonController {
     }
 
     @GetMapping()
-    public List<ResponsePersonDto> getPersons(){
-        return personService.getAllPersons();
+    public ResponseEntity<ApiResponse<List<ResponsePersonDto>>> getPersons(){
+        List<ResponsePersonDto> countries = personService.getAllPersons();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<List<ResponsePersonDto>>builder()
+                        .success(true)
+                        .message("Lấy persons thành công")
+                        .data(countries)
+                        .build());
     }
 
     @PostMapping()
@@ -73,22 +80,46 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public ResponsePersonDto getPersonById(@PathVariable Long id){
-        return personService.getPersonById(id);
+    public ResponseEntity<ApiResponse<ResponsePersonDto>> getPersonById(@PathVariable Long id){
+        ResponsePersonDto person = personService.getPersonById(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<ResponsePersonDto>builder()
+                        .success(true)
+                        .message("Lấy person thành công")
+                        .data(person)
+                        .build());
     }
 
     @GetMapping("/{name}/by-name")
-    public List<ResponsePersonDto> getPersonsByName(@PathVariable String name){
-        return personService.getPersonsByName(name);
+    public ResponseEntity<ApiResponse<List<ResponsePersonDto>>> getPersonsByName(@PathVariable String name){
+        List<ResponsePersonDto> persons = personService.getPersonsByName(name);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<List<ResponsePersonDto>>builder()
+                        .success(true)
+                        .message("Lấy persons thành công")
+                        .data(persons)
+                        .build());
     }
 
     @GetMapping("/{phoneNumber}/by-phone")
-    public ResponsePersonDto getPersonByPhoneNumber(@PathVariable String phoneNumber){
-        return personService.getPersonByPhoneNumber(phoneNumber);
+    public ResponseEntity<ApiResponse<ResponsePersonDto>> getPersonByPhoneNumber(@PathVariable String phoneNumber){
+        ResponsePersonDto person = personService.getPersonByPhoneNumber(phoneNumber);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<ResponsePersonDto>builder()
+                        .success(true)
+                        .message("Lấy person thành công")
+                        .data(person)
+                        .build());
     }
 
     @GetMapping("/{userId}/by-user")
-    public ResponsePersonDto getPersonByUserId(@PathVariable Long userId){
-        return personService.getPersonByUserId(userId);
+    public ResponseEntity<ApiResponse<ResponsePersonDto>> getPersonByUserId(@PathVariable Long userId){
+        ResponsePersonDto person = personService.getPersonByUserId(userId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<ResponsePersonDto>builder()
+                        .success(true)
+                        .message("Lấy person thành công")
+                        .data(person)
+                        .build());
     }
 }

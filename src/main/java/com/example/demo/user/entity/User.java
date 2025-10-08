@@ -1,18 +1,25 @@
 package com.example.demo.user.entity;
 
-import com.example.demo.company.entity.Company;
 import com.example.demo.person.entity.Person;
+import com.example.demo.role.entity.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Data()
+import java.util.HashSet;
+import java.util.Set;
+
+@Getter
+@Setter
 @NoArgsConstructor()
 @AllArgsConstructor()
 @Entity
 @Table(name = "users")
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString(exclude = {"person", "roles"})
+@EqualsAndHashCode(exclude = {"person", "roles"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +35,15 @@ public class User {
     boolean isActive;
     
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     Person person;
+
+    @ManyToMany(fetch =  FetchType.LAZY)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    Set<Role> roles =  new HashSet<>();
 
 }

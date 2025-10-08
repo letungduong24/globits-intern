@@ -1,6 +1,7 @@
 package com.example.demo.user.dto;
 
 import com.example.demo.person.dto.PersonMapper;
+import com.example.demo.role.dto.RoleMapper;
 import com.example.demo.user.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -11,20 +12,23 @@ import java.util.stream.Collectors;
 public class UserMapper {
     
     private final PersonMapper personMapper;
+    private final RoleMapper roleMapper;
     
-    public UserMapper(PersonMapper personMapper) {
+    public UserMapper(PersonMapper personMapper, RoleMapper roleMapper) {
         this.personMapper = personMapper;
+        this.roleMapper = roleMapper;
     }
-    
+
     public ResponseUserDto toDTO(User user) {
         if (user == null) {
             return null;
         }
-        
+
         return ResponseUserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .isActive(user.isActive())
+                .roles(roleMapper.toDTOs(user.getRoles()))
                 .build();
     }
 

@@ -12,6 +12,7 @@ import com.example.demo.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PersonServiceImpl implements PersonService {
@@ -90,7 +91,7 @@ public class PersonServiceImpl implements PersonService {
     public ResponsePersonDto updatePerson(UpdatePersonDto personDto) {
         Person person = personRepository.findById(personDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy person"));
-        
+
         if (personDto.getPhoneNumber() != null && !personDto.getPhoneNumber().equals(person.getPhoneNumber())) {
             if (personRepository.existsByPhoneNumber(personDto.getPhoneNumber())) {
                 throw new DuplicateResourceException("Số điện thoại đã tồn tại");
@@ -118,6 +119,9 @@ public class PersonServiceImpl implements PersonService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy person"));
         Company company = companyRepository.findById(dto.getCompanyId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy company"));
+        if(Objects.equals(person.getCompany().getId(), dto.getCompanyId())) {
+            throw new DuplicateResourceException("Person đã company này");
+        }
         person.setCompany(company);
         return personMapper.toDTO(personRepository.save(person));
     }
