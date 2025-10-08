@@ -18,8 +18,6 @@ import java.util.Set;
 @Table(name = "users")
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@ToString(exclude = {"person", "roles"})
-@EqualsAndHashCode(exclude = {"person", "roles"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

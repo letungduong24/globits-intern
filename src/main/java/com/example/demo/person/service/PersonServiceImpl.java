@@ -66,6 +66,11 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    public List<PersonBasicDto> getPersonsByProjectId(Long projectId) {
+        return personMapper.toBasicDTOs(personRepository.findByProjectsId(projectId));
+    }
+
+    @Override
     public ResponsePersonDto createPerson(CreatePersonDto personDto) {
         if (personDto.getPhoneNumber() != null && personRepository.existsByPhoneNumber(personDto.getPhoneNumber())) {
             throw new DuplicateResourceException("Số điện thoại đã tồn tại");

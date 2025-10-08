@@ -1,17 +1,21 @@
 package com.example.demo.person.entity;
 
 import com.example.demo.company.entity.Company;
+import com.example.demo.project.entity.Project;
 import com.example.demo.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.Set;
 
-@Data()
+@Setter
+@Getter
+@ToString
+@Entity
 @NoArgsConstructor()
 @AllArgsConstructor()
-@Entity
 @Table(name = "persons")
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -40,4 +44,7 @@ public class Person {
     @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "company_id")
     Company company;
+
+    @ManyToMany(mappedBy = "persons", fetch = FetchType.LAZY)
+    Set<Project> projects;
 }

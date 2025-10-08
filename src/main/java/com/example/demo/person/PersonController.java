@@ -1,10 +1,7 @@
 package com.example.demo.person;
 
 import com.example.demo.country.dto.ResponseCountryDto;
-import com.example.demo.person.dto.AssignCompanyDto;
-import com.example.demo.person.dto.CreatePersonDto;
-import com.example.demo.person.dto.ResponsePersonDto;
-import com.example.demo.person.dto.UpdatePersonDto;
+import com.example.demo.person.dto.*;
 import com.example.demo.person.service.PersonService;
 import com.example.demo.shared.ApiResponse;
 import jakarta.validation.Valid;
@@ -131,6 +128,17 @@ public class PersonController {
                         .success(true)
                         .message("Lấy person thành công")
                         .data(person)
+                        .build());
+    }
+
+    @GetMapping("/{projectId}/by-project")
+    public ResponseEntity<ApiResponse<List<PersonBasicDto>>> getPersonsByProjectId(@PathVariable Long projectId){
+        List<PersonBasicDto> persons = personService.getPersonsByProjectId(projectId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<List<PersonBasicDto>>builder()
+                        .success(true)
+                        .message("Lấy persons theo dự án thành công")
+                        .data(persons)
                         .build());
     }
 }

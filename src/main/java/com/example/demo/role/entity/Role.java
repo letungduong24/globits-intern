@@ -7,16 +7,14 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.Set;
 
-@Getter
 @Setter
+@Getter
+@Entity
 @NoArgsConstructor()
 @AllArgsConstructor()
-@Entity
 @Table(name = "roles")
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@ToString(exclude = "users")
-@EqualsAndHashCode(exclude = "users")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

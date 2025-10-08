@@ -5,10 +5,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Data()
+@Setter
+@Getter
+@ToString
+@Entity
 @NoArgsConstructor()
 @AllArgsConstructor()
-@Entity
 @Table(name = "departments")
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)

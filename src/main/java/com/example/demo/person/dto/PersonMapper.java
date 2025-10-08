@@ -65,6 +65,16 @@ public class PersonMapper {
                 .build();
     }
 
+    public List<PersonBasicDto> toBasicDTOs(List<Person> persons) {
+        if (persons == null) {
+            return null;
+        }
+        
+        return persons.stream()
+                .map(this::toBasicDTO)
+                .collect(Collectors.toList());
+    }
+
     public Person updateEntity(Person existingPerson, UpdatePersonDto updateDto) {
         if (existingPerson == null || updateDto == null) {
             return existingPerson;
