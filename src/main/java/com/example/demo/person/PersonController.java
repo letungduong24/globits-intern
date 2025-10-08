@@ -101,6 +101,17 @@ public class PersonController {
                         .build());
     }
 
+    @GetMapping("/{id}/by-company")
+    public ResponseEntity<ApiResponse<List<ResponsePersonDto>>> getPersonsByCompanyId(@PathVariable Long id){
+        List<ResponsePersonDto> persons = personService.getPersonsByCompanyId(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<List<ResponsePersonDto>>builder()
+                        .success(true)
+                        .message("Lấy persons thành công")
+                        .data(persons)
+                        .build());
+    }
+
     @GetMapping("/{phoneNumber}/by-phone")
     public ResponseEntity<ApiResponse<ResponsePersonDto>> getPersonByPhoneNumber(@PathVariable String phoneNumber){
         ResponsePersonDto person = personService.getPersonByPhoneNumber(phoneNumber);

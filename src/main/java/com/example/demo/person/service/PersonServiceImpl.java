@@ -61,6 +61,11 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    public List<ResponsePersonDto> getPersonsByCompanyId(Long companyId) {
+        return personMapper.toDTOs(personRepository.findByCompanyId(companyId));
+    }
+
+    @Override
     public ResponsePersonDto createPerson(CreatePersonDto personDto) {
         if (personDto.getPhoneNumber() != null && personRepository.existsByPhoneNumber(personDto.getPhoneNumber())) {
             throw new DuplicateResourceException("Số điện thoại đã tồn tại");
@@ -119,7 +124,7 @@ public class PersonServiceImpl implements PersonService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy person"));
         Company company = companyRepository.findById(dto.getCompanyId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy company"));
-        if(Objects.equals(person.getCompany().getId(), dto.getCompanyId())) {
+        if(person.getCompany() != null && Objects.equals(person.getCompany().getId(), dto.getCompanyId())) {
             throw new DuplicateResourceException("Person đã company này");
         }
         person.setCompany(company);

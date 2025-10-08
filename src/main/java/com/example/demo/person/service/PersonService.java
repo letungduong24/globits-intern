@@ -10,6 +10,7 @@ import java.util.List;
 public interface PersonService {
     List<ResponsePersonDto> getAllPersons();
     List<ResponsePersonDto> getPersonsByName(String name);
+    List<ResponsePersonDto> getPersonsByCompanyId(Long companyId);
     ResponsePersonDto getPersonById(Long id);
     ResponsePersonDto getPersonByPhoneNumber(String phoneNumber);
     ResponsePersonDto getPersonByUserId(Long userId);
