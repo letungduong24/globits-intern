@@ -2,9 +2,9 @@ package com.example.demo.country.service;
 
 import com.example.demo.country.CountryRepository;
 import com.example.demo.country.dto.CountryMapper;
-import com.example.demo.country.dto.CreateCountryDto;
-import com.example.demo.country.dto.ResponseCountryDto;
-import com.example.demo.country.dto.UpdateCountryDto;
+import com.example.demo.country.dto.request.CreateCountryDto;
+import com.example.demo.country.dto.response.CountryDto;
+import com.example.demo.country.dto.request.UpdateCountryDto;
 import com.example.demo.country.entity.Country;
 import com.example.demo.shared.exception.DuplicateResourceException;
 import com.example.demo.shared.exception.ResourceNotFoundException;
@@ -25,32 +25,32 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public List<ResponseCountryDto> getAllCountries() {
+    public List<CountryDto> getAllCountries() {
 
         return countryMapper.toDTOs(countryRepository.findAll());
     }
 
     @Override
-    public List<ResponseCountryDto> getCountriesByName(String name) {
+    public List<CountryDto> getCountriesByName(String name) {
         return countryMapper.toDTOs(countryRepository.findByNameContainingIgnoreCase(name));
     }
 
     @Override
-    public ResponseCountryDto getCountryById(Long id) {
+    public CountryDto getCountryById(Long id) {
         Country country = countryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy country"));
         return countryMapper.toDTO(country);
     }
 
     @Override
-    public ResponseCountryDto getCountryByCode(String code) {
+    public CountryDto getCountryByCode(String code) {
         Country country = countryRepository.findByCode(code)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy country"));
         return countryMapper.toDTO(country);
     }
 
     @Override
-    public ResponseCountryDto createCountry(CreateCountryDto countryDto) {
+    public CountryDto createCountry(CreateCountryDto countryDto) {
         countryRepository.findByCode(countryDto.getCode())
                 .ifPresent(c -> { throw new DuplicateResourceException("Country đã tồn tại"); });
         Country country = countryMapper.toEntity(countryDto);
@@ -59,7 +59,7 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public ResponseCountryDto updateCountry(UpdateCountryDto countryDto) {
+    public CountryDto updateCountry(UpdateCountryDto countryDto) {
         Country country = countryRepository.findById(countryDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy country"));
 
@@ -77,11 +77,11 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public ResponseCountryDto deleteCountryById(Long id) {
+    public CountryDto deleteCountryById(Long id) {
         Country country = countryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy country"));
 
-        ResponseCountryDto dto = ResponseCountryDto.builder()
+        CountryDto dto = CountryDto.builder()
                 .id(country.getId())
                 .code(country.getCode())
                 .name(country.getName())

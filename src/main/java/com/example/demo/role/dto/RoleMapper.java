@@ -1,5 +1,8 @@
 package com.example.demo.role.dto;
 
+import com.example.demo.role.dto.request.CreateRoleDto;
+import com.example.demo.role.dto.request.UpdateRoleDto;
+import com.example.demo.role.dto.response.RoleDto;
 import com.example.demo.role.entity.Role;
 import org.springframework.stereotype.Component;
 
@@ -10,19 +13,19 @@ import java.util.stream.Collectors;
 @Component
 public class RoleMapper {
 
-    public ResponseRoleDto toDTO(Role role) {
+    public RoleDto toDTO(Role role) {
         if (role == null) {
             return null;
         }
         
-        return ResponseRoleDto.builder()
+        return RoleDto.builder()
                 .id(role.getId())
                 .role(role.getRole())
                 .description(role.getDescription())
                 .build();
     }
 
-    public List<ResponseRoleDto> toDTOs(List<Role> roles) {
+    public List<RoleDto> toDTOs(List<Role> roles) {
         if (roles == null) {
             return null;
         }
@@ -32,7 +35,7 @@ public class RoleMapper {
                 .collect(Collectors.toList());
     }
 
-    public Set<ResponseRoleDto> toDTOs(Set<Role> roles) {
+    public Set<RoleDto> toDTOs(Set<Role> roles) {
         if (roles == null) {
             return null;
         }

@@ -1,10 +1,9 @@
 package com.example.demo.user;
 
-import com.example.demo.user.dto.AssignRoleDto;
-import com.example.demo.user.dto.CreateUserDto;
-import com.example.demo.user.dto.ResponseUserDto;
-import com.example.demo.user.dto.ResponseUserWithPersonDto;
-import com.example.demo.user.dto.UpdateUserDto;
+import com.example.demo.user.dto.request.AssignRoleDto;
+import com.example.demo.user.dto.request.CreateUserDto;
+import com.example.demo.user.dto.response.UserDto;
+import com.example.demo.user.dto.request.UpdateUserDto;
 import com.example.demo.user.service.UserService;
 import com.example.demo.shared.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -25,10 +24,10 @@ public class UserController {
     }
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<List<ResponseUserDto>>> getUsers(){
-        List<ResponseUserDto> countries = userService.getAllUsers();
+    public ResponseEntity<ApiResponse<List<UserDto>>> getUsers(){
+        List<UserDto> countries = userService.getAllUsers();
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<List<ResponseUserDto>>builder()
+                .body(ApiResponse.<List<UserDto>>builder()
                         .success(true)
                         .message("Lấy users thành công")
                         .data(countries)
@@ -36,10 +35,10 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<ResponseUserDto>> createUser(@Valid @RequestBody CreateUserDto user){
-        ResponseUserDto created = userService.createUser(user);
+    public ResponseEntity<ApiResponse<UserDto>> createUser(@Valid @RequestBody CreateUserDto user){
+        UserDto created = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.<ResponseUserDto>builder()
+                .body(ApiResponse.<UserDto>builder()
                         .success(true)
                         .message("Tạo user thành công")
                         .data(created)
@@ -47,10 +46,10 @@ public class UserController {
     }
 
     @PutMapping()
-    public ResponseEntity<ApiResponse<ResponseUserDto>> updateUser(@Valid @RequestBody UpdateUserDto userDto){
-        ResponseUserDto updated = userService.updateUser(userDto);
+    public ResponseEntity<ApiResponse<UserDto>> updateUser(@Valid @RequestBody UpdateUserDto userDto){
+        UserDto updated = userService.updateUser(userDto);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseUserDto>builder()
+                .body(ApiResponse.<UserDto>builder()
                         .success(true)
                         .message("Cập nhật user thành công")
                         .data(updated)
@@ -58,10 +57,10 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<ResponseUserDto>> deleteUserById(@PathVariable Long id) {
-        ResponseUserDto deleted = userService.deleteUserById(id);
+    public ResponseEntity<ApiResponse<UserDto>> deleteUserById(@PathVariable Long id) {
+        UserDto deleted = userService.deleteUserById(id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseUserDto>builder()
+                .body(ApiResponse.<UserDto>builder()
                         .success(true)
                         .message("Xóa user thành công")
                         .data(deleted)
@@ -69,10 +68,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ResponseUserDto>> getUserById(@PathVariable Long id){
-        ResponseUserDto user = userService.getUserById(id);
+    public ResponseEntity<ApiResponse<UserDto>> getUserById(@PathVariable Long id){
+        UserDto user = userService.getUserById(id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseUserDto>builder()
+                .body(ApiResponse.<UserDto>builder()
                         .success(true)
                         .message("Lấy user thành công")
                         .data(user)
@@ -80,43 +79,21 @@ public class UserController {
     }
 
     @GetMapping("/{email}/by-email")
-    public ResponseEntity<ApiResponse<ResponseUserDto>> getUserByEmail(@PathVariable String email){
-        ResponseUserDto user = userService.getUserByEmail(email);
+    public ResponseEntity<ApiResponse<UserDto>> getUserByEmail(@PathVariable String email){
+        UserDto user = userService.getUserByEmail(email);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseUserDto>builder()
+                .body(ApiResponse.<UserDto>builder()
                         .success(true)
                         .message("Lấy user thành công")
                         .data(user)
                         .build());
     }
 
-    @GetMapping("/with-person/{id}")
-    public ResponseEntity<ApiResponse<ResponseUserWithPersonDto>> getUserWithPersonById(@PathVariable Long id){
-        ResponseUserWithPersonDto user = userService.getUserWithPersonById(id);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseUserWithPersonDto>builder()
-                        .success(true)
-                        .message("Lấy user với person thành công")
-                        .data(user)
-                        .build());
-    }
-
-    @GetMapping("/with-person/{email}/by-email")
-    public ResponseEntity<ApiResponse<ResponseUserWithPersonDto>> getUserWithPersonByEmail(@PathVariable String email){
-        ResponseUserWithPersonDto user = userService.getUserWithPersonByEmail(email);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseUserWithPersonDto>builder()
-                        .success(true)
-                        .message("Lấy user với person thành công")
-                        .data(user)
-                        .build());
-    }
-
     @PostMapping("/assign-role")
-    public ResponseEntity<ApiResponse<ResponseUserDto>> assignRole(@Valid @RequestBody AssignRoleDto assignRoleDto){
-        ResponseUserDto user = userService.assignRole(assignRoleDto);
+    public ResponseEntity<ApiResponse<UserDto>> assignRole(@Valid @RequestBody AssignRoleDto assignRoleDto){
+        UserDto user = userService.assignRole(assignRoleDto);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseUserDto>builder()
+                .body(ApiResponse.<UserDto>builder()
                         .success(true)
                         .message("Gán role cho user thành công")
                         .data(user)
@@ -124,10 +101,10 @@ public class UserController {
     }
 
     @PostMapping("/remove-role")
-    public ResponseEntity<ApiResponse<ResponseUserDto>> removeRole(@Valid @RequestBody AssignRoleDto assignRoleDto){
-        ResponseUserDto user = userService.removeRole(assignRoleDto);
+    public ResponseEntity<ApiResponse<UserDto>> removeRole(@Valid @RequestBody AssignRoleDto assignRoleDto){
+        UserDto user = userService.removeRole(assignRoleDto);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseUserDto>builder()
+                .body(ApiResponse.<UserDto>builder()
                         .success(true)
                         .message("Xóa role khỏi user thành công")
                         .data(user)

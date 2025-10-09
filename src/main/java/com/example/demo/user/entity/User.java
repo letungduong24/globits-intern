@@ -30,7 +30,8 @@ public class User {
     String password;
     
     @Column(name = "is_active")
-    boolean isActive;
+    @Builder.Default
+    boolean isActive = true;
     
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore

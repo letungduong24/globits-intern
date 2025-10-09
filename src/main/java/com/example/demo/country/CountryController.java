@@ -1,8 +1,8 @@
 package com.example.demo.country;
 
-import com.example.demo.country.dto.CreateCountryDto;
-import com.example.demo.country.dto.ResponseCountryDto;
-import com.example.demo.country.dto.UpdateCountryDto;
+import com.example.demo.country.dto.request.CreateCountryDto;
+import com.example.demo.country.dto.response.CountryDto;
+import com.example.demo.country.dto.request.UpdateCountryDto;
 import com.example.demo.country.service.CountryService;
 import com.example.demo.shared.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -23,10 +23,10 @@ public class CountryController {
     }
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<List<ResponseCountryDto>>> getCountries(){
-        List<ResponseCountryDto> countries = countryService.getAllCountries();
+    public ResponseEntity<ApiResponse<List<CountryDto>>> getCountries(){
+        List<CountryDto> countries = countryService.getAllCountries();
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<List<ResponseCountryDto>>builder()
+                .body(ApiResponse.<List<CountryDto>>builder()
                         .success(true)
                         .message("Lấy countries thành công")
                         .data(countries)
@@ -34,10 +34,10 @@ public class CountryController {
     }
 
     @GetMapping("/{name}/by-name")
-    public ResponseEntity<ApiResponse<List<ResponseCountryDto>>> getCountriesByName(@PathVariable String name){
-        List<ResponseCountryDto> countries = countryService.getCountriesByName(name);
+    public ResponseEntity<ApiResponse<List<CountryDto>>> getCountriesByName(@PathVariable String name){
+        List<CountryDto> countries = countryService.getCountriesByName(name);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<List<ResponseCountryDto>>builder()
+                .body(ApiResponse.<List<CountryDto>>builder()
                         .success(true)
                         .message("Lấy countries thành công")
                         .data(countries)
@@ -45,10 +45,10 @@ public class CountryController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<ResponseCountryDto>>  createCountry(@Valid @RequestBody CreateCountryDto country){
-        ResponseCountryDto created = countryService.createCountry(country);
+    public ResponseEntity<ApiResponse<CountryDto>>  createCountry(@Valid @RequestBody CreateCountryDto country){
+        CountryDto created = countryService.createCountry(country);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.<ResponseCountryDto>builder()
+                .body(ApiResponse.<CountryDto>builder()
                         .success(true)
                         .message("Tạo country thành công")
                         .data(created)
@@ -57,10 +57,10 @@ public class CountryController {
     }
 
     @PutMapping()
-    public ResponseEntity<ApiResponse<ResponseCountryDto>>  updateCountry(@RequestBody UpdateCountryDto countryDto){
-        ResponseCountryDto updated = countryService.updateCountry(countryDto);
+    public ResponseEntity<ApiResponse<CountryDto>>  updateCountry(@RequestBody UpdateCountryDto countryDto){
+        CountryDto updated = countryService.updateCountry(countryDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.<ResponseCountryDto>builder()
+                .body(ApiResponse.<CountryDto>builder()
                         .success(true)
                         .message("Update country thành công")
                         .data(updated)
@@ -68,10 +68,10 @@ public class CountryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<ResponseCountryDto>> deleteCountryById(@PathVariable Long id) {
-        ResponseCountryDto deleted = countryService.deleteCountryById(id);
+    public ResponseEntity<ApiResponse<CountryDto>> deleteCountryById(@PathVariable Long id) {
+        CountryDto deleted = countryService.deleteCountryById(id);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.<ResponseCountryDto>builder()
+                .body(ApiResponse.<CountryDto>builder()
                         .success(true)
                         .message("Xoá country thành công")
                         .data(deleted)
@@ -79,10 +79,10 @@ public class CountryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ResponseCountryDto>> getCountryById(@PathVariable Long id){
-        ResponseCountryDto country = countryService.getCountryById(id);
+    public ResponseEntity<ApiResponse<CountryDto>> getCountryById(@PathVariable Long id){
+        CountryDto country = countryService.getCountryById(id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseCountryDto>builder()
+                .body(ApiResponse.<CountryDto>builder()
                         .success(true)
                         .message("Lấy country thành công")
                         .data(country)
@@ -90,10 +90,10 @@ public class CountryController {
     }
 
     @GetMapping("/{code}/by-code")
-    public ResponseEntity<ApiResponse<ResponseCountryDto>> getCountryByCode(@PathVariable String code){
-        ResponseCountryDto country = countryService.getCountryByCode(code);
+    public ResponseEntity<ApiResponse<CountryDto>> getCountryByCode(@PathVariable String code){
+        CountryDto country = countryService.getCountryByCode(code);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseCountryDto>builder()
+                .body(ApiResponse.<CountryDto>builder()
                         .success(true)
                         .message("Lấy country thành công")
                         .data(country)

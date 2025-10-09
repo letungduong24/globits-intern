@@ -1,8 +1,8 @@
 package com.example.demo.role;
 
-import com.example.demo.role.dto.CreateRoleDto;
-import com.example.demo.role.dto.ResponseRoleDto;
-import com.example.demo.role.dto.UpdateRoleDto;
+import com.example.demo.role.dto.request.CreateRoleDto;
+import com.example.demo.role.dto.response.RoleDto;
+import com.example.demo.role.dto.request.UpdateRoleDto;
 import com.example.demo.role.service.RoleService;
 import com.example.demo.shared.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -23,10 +23,10 @@ public class RoleController {
     }
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<List<ResponseRoleDto>>> getRoles(){
-        List<ResponseRoleDto> roles = roleService.getAllRoles();
+    public ResponseEntity<ApiResponse<List<RoleDto>>> getRoles(){
+        List<RoleDto> roles = roleService.getAllRoles();
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<List<ResponseRoleDto>>builder()
+                .body(ApiResponse.<List<RoleDto>>builder()
                         .success(true)
                         .message("Lấy roles thành công")
                         .data(roles)
@@ -34,10 +34,10 @@ public class RoleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ResponseRoleDto>> getRoleById(@PathVariable Long id){
-        ResponseRoleDto role = roleService.getRoleById(id);
+    public ResponseEntity<ApiResponse<RoleDto>> getRoleById(@PathVariable Long id){
+        RoleDto role = roleService.getRoleById(id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseRoleDto>builder()
+                .body(ApiResponse.<RoleDto>builder()
                         .success(true)
                         .message("Lấy role thành công")
                         .data(role)
@@ -45,10 +45,10 @@ public class RoleController {
     }
 
     @GetMapping("/{name}/by-name")
-    public ResponseEntity<ApiResponse<ResponseRoleDto>> getRoleByRoleName(@PathVariable String name){
-        ResponseRoleDto role = roleService.getRoleByRoleName(name);
+    public ResponseEntity<ApiResponse<RoleDto>> getRoleByRoleName(@PathVariable String name){
+        RoleDto role = roleService.getRoleByRoleName(name);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseRoleDto>builder()
+                .body(ApiResponse.<RoleDto>builder()
                         .success(true)
                         .message("Lấy role thành công")
                         .data(role)
@@ -56,10 +56,10 @@ public class RoleController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<ResponseRoleDto>> createRole(@Valid @RequestBody CreateRoleDto createRoleDto){
-        ResponseRoleDto created = roleService.createRole(createRoleDto);
+    public ResponseEntity<ApiResponse<RoleDto>> createRole(@Valid @RequestBody CreateRoleDto createRoleDto){
+        RoleDto created = roleService.createRole(createRoleDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.<ResponseRoleDto>builder()
+                .body(ApiResponse.<RoleDto>builder()
                         .success(true)
                         .message("Tạo role thành công")
                         .data(created)
@@ -67,10 +67,10 @@ public class RoleController {
     }
 
     @PutMapping()
-    public ResponseEntity<ApiResponse<ResponseRoleDto>> updateRole(@Valid @RequestBody UpdateRoleDto updateRoleDto){
-        ResponseRoleDto updated = roleService.updateRole(updateRoleDto);
+    public ResponseEntity<ApiResponse<RoleDto>> updateRole(@Valid @RequestBody UpdateRoleDto updateRoleDto){
+        RoleDto updated = roleService.updateRole(updateRoleDto);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseRoleDto>builder()
+                .body(ApiResponse.<RoleDto>builder()
                         .success(true)
                         .message("Cập nhật role thành công")
                         .data(updated)
@@ -78,10 +78,10 @@ public class RoleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<ResponseRoleDto>> deleteRoleById(@PathVariable Long id) {
-        ResponseRoleDto deleted = roleService.deleteRoleById(id);
+    public ResponseEntity<ApiResponse<RoleDto>> deleteRoleById(@PathVariable Long id) {
+        RoleDto deleted = roleService.deleteRoleById(id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseRoleDto>builder()
+                .body(ApiResponse.<RoleDto>builder()
                         .success(true)
                         .message("Xóa role thành công")
                         .data(deleted)

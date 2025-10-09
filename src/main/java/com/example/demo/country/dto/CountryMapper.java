@@ -1,5 +1,8 @@
 package com.example.demo.country.dto;
 
+import com.example.demo.country.dto.request.CreateCountryDto;
+import com.example.demo.country.dto.request.UpdateCountryDto;
+import com.example.demo.country.dto.response.CountryDto;
 import com.example.demo.country.entity.Country;
 import org.springframework.stereotype.Component;
 
@@ -9,12 +12,12 @@ import java.util.stream.Collectors;
 @Component
 public class CountryMapper {
 
-    public ResponseCountryDto toDTO(Country country) {
+    public CountryDto toDTO(Country country) {
         if (country == null) {
             return null;
         }
         
-        return ResponseCountryDto.builder()
+        return CountryDto.builder()
                 .id(country.getId())
                 .name(country.getName())
                 .description(country.getDescription())
@@ -22,7 +25,7 @@ public class CountryMapper {
                 .build();
     }
 
-    public List<ResponseCountryDto> toDTOs(List<Country> countries) {
+    public List<CountryDto> toDTOs(List<Country> countries) {
         if (countries == null) {
             return null;
         }

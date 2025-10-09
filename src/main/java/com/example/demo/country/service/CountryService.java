@@ -1,19 +1,18 @@
 package com.example.demo.country.service;
 
-import com.example.demo.country.dto.CreateCountryDto;
-import com.example.demo.country.dto.ResponseCountryDto;
-import com.example.demo.country.dto.UpdateCountryDto;
-import com.example.demo.country.entity.Country;
+import com.example.demo.country.dto.request.CreateCountryDto;
+import com.example.demo.country.dto.response.CountryDto;
+import com.example.demo.country.dto.request.UpdateCountryDto;
 
 import java.util.List;
 
 public interface CountryService {
-    List<ResponseCountryDto> getAllCountries();
-    ResponseCountryDto getCountryById(Long id);
-    List<ResponseCountryDto> getCountriesByName(String name);
-    ResponseCountryDto getCountryByCode(String code);
-    ResponseCountryDto createCountry(CreateCountryDto country);
-    ResponseCountryDto updateCountry(UpdateCountryDto country);
-    ResponseCountryDto deleteCountryById(Long id);
+    List<CountryDto> getAllCountries();
+    CountryDto getCountryById(Long id);
+    List<CountryDto> getCountriesByName(String name);
+    CountryDto getCountryByCode(String code);
+    CountryDto createCountry(CreateCountryDto country);
+    CountryDto updateCountry(UpdateCountryDto country);
+    CountryDto deleteCountryById(Long id);
     boolean existsCountryById(Long id);
 }

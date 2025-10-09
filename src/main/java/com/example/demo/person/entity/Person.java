@@ -31,7 +31,7 @@ public class Person {
     @Column(name = "birth_date")
     LocalDate birthDate;
     
-    @Column(name = "phone_number", unique = true, nullable = false)
+    @Column(name = "phone_number")
     String phoneNumber;
     
     String address;

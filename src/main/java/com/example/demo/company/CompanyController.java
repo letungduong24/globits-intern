@@ -1,14 +1,13 @@
 package com.example.demo.company;
 
-import com.example.demo.company.dto.CreateCompanyDto;
-import com.example.demo.company.dto.ResponseCompanyDto;
-import com.example.demo.company.dto.UpdateCompanyDto;
+import com.example.demo.company.dto.request.CreateCompanyDto;
+import com.example.demo.company.dto.response.CompanyDto;
+import com.example.demo.company.dto.request.UpdateCompanyDto;
 import com.example.demo.company.service.CompanyService;
 import com.example.demo.shared.request.PaginationRequest;
 import com.example.demo.shared.response.ApiResponse;
 import com.example.demo.shared.response.PagedResponse;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +26,10 @@ public class CompanyController {
     }
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<List<ResponseCompanyDto>>> getCompanies(){
-        List<ResponseCompanyDto> countries = companyService.getAllCompanies();
+    public ResponseEntity<ApiResponse<List<CompanyDto>>> getCompanies(){
+        List<CompanyDto> countries = companyService.getAllCompanies();
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<List<ResponseCompanyDto>>builder()
+                .body(ApiResponse.<List<CompanyDto>>builder()
                         .success(true)
                         .message("Lấy companies thành công")
                         .data(countries)
@@ -38,13 +37,13 @@ public class CompanyController {
     }
 
     @GetMapping("/paged")
-    public ResponseEntity<ApiResponse<PagedResponse<ResponseCompanyDto>>> getCompaniesPaged(
+    public ResponseEntity<ApiResponse<PagedResponse<CompanyDto>>> getCompaniesPaged(
             PaginationRequest paginationRequest
     ){
         Pageable pageable = paginationRequest.toPageable();
-        PagedResponse<ResponseCompanyDto> pagedCompanies = companyService.getAllCompanies(pageable);
+        PagedResponse<CompanyDto> pagedCompanies = companyService.getAllCompanies(pageable);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.<PagedResponse<ResponseCompanyDto>>builder()
+                .body(ApiResponse.<PagedResponse<CompanyDto>>builder()
                         .success(true)
                         .message("Lây công ty thành công")
                         .data(pagedCompanies)
@@ -53,10 +52,10 @@ public class CompanyController {
 
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<ResponseCompanyDto>> createCompany(@Valid @RequestBody CreateCompanyDto company){
-        ResponseCompanyDto created = companyService.createCompany(company);
+    public ResponseEntity<ApiResponse<CompanyDto>> createCompany(@Valid @RequestBody CreateCompanyDto company){
+        CompanyDto created = companyService.createCompany(company);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.<ResponseCompanyDto>builder()
+                .body(ApiResponse.<CompanyDto>builder()
                         .success(true)
                         .message("Tạo công ty thành công")
                         .data(created)
@@ -64,10 +63,10 @@ public class CompanyController {
     }
 
     @PutMapping()
-    public ResponseEntity<ApiResponse<ResponseCompanyDto>> updateCompany(@Valid @RequestBody UpdateCompanyDto companyDto){
-        ResponseCompanyDto updated = companyService.updateCompany(companyDto);
+    public ResponseEntity<ApiResponse<CompanyDto>> updateCompany(@Valid @RequestBody UpdateCompanyDto companyDto){
+        CompanyDto updated = companyService.updateCompany(companyDto);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseCompanyDto>builder()
+                .body(ApiResponse.<CompanyDto>builder()
                         .success(true)
                         .message("Cập nhật công ty thành công")
                         .data(updated)
@@ -75,10 +74,10 @@ public class CompanyController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<ResponseCompanyDto>> deleteCompanyById(@PathVariable Long id) {
-        ResponseCompanyDto deleted = companyService.deleteCompanyById(id);
+    public ResponseEntity<ApiResponse<CompanyDto>> deleteCompanyById(@PathVariable Long id) {
+        CompanyDto deleted = companyService.deleteCompanyById(id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseCompanyDto>builder()
+                .body(ApiResponse.<CompanyDto>builder()
                         .success(true)
                         .message("Xóa công ty thành công")
                         .data(deleted)
@@ -86,10 +85,10 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ResponseCompanyDto>> getCompanyById(@PathVariable Long id){
-        ResponseCompanyDto company = companyService.getCompanyById(id);
+    public ResponseEntity<ApiResponse<CompanyDto>> getCompanyById(@PathVariable Long id){
+        CompanyDto company = companyService.getCompanyById(id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseCompanyDto>builder()
+                .body(ApiResponse.<CompanyDto>builder()
                         .success(true)
                         .message("Lấy company thành công")
                         .data(company)
@@ -97,10 +96,10 @@ public class CompanyController {
     }
 
     @GetMapping("/{name}/by-name")
-    public ResponseEntity<ApiResponse<List<ResponseCompanyDto>>> getCompaniesByName(@PathVariable String name){
-        List<ResponseCompanyDto> companies = companyService.getCompaniesByName(name);
+    public ResponseEntity<ApiResponse<List<CompanyDto>>> getCompaniesByName(@PathVariable String name){
+        List<CompanyDto> companies = companyService.getCompaniesByName(name);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<List<ResponseCompanyDto>>builder()
+                .body(ApiResponse.<List<CompanyDto>>builder()
                         .success(true)
                         .message("Lấy companies thành công")
                         .data(companies)
@@ -108,10 +107,10 @@ public class CompanyController {
     }
 
     @GetMapping("/{code}/by-code")
-    public ResponseEntity<ApiResponse<ResponseCompanyDto>> getCompanyByCode(@PathVariable String code){
-        ResponseCompanyDto company = companyService.getCompanyByCode(code);
+    public ResponseEntity<ApiResponse<CompanyDto>> getCompanyByCode(@PathVariable String code){
+        CompanyDto company = companyService.getCompanyByCode(code);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseCompanyDto>builder()
+                .body(ApiResponse.<CompanyDto>builder()
                         .success(true)
                         .message("Lấy company thành công")
                         .data(company)

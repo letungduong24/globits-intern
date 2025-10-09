@@ -4,6 +4,12 @@ import com.example.demo.company.CompanyRepository;
 import com.example.demo.company.entity.Company;
 import com.example.demo.department.DepartmentRepository;
 import com.example.demo.department.dto.*;
+import com.example.demo.department.dto.request.AssignCompanyDto;
+import com.example.demo.department.dto.request.AssignParentDto;
+import com.example.demo.department.dto.request.CreateDepartmentDto;
+import com.example.demo.department.dto.request.UpdateDepartmentDto;
+import com.example.demo.department.dto.response.BasicDepartmentDto;
+import com.example.demo.department.dto.response.DepartmentDto;
 import com.example.demo.department.entity.Department;
 import com.example.demo.shared.exception.DuplicateResourceException;
 import com.example.demo.shared.exception.ResourceNotFoundException;
@@ -27,19 +33,19 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public List<ResponseDepartmentDto> getAllDepartments() {
+    public List<DepartmentDto> getAllDepartments() {
         return departmentMapper.toDTOs(departmentRepository.findAll());
     }
 
     @Override
-    public ResponseDepartmentDto getDepartmentById(Long id) {
+    public DepartmentDto getDepartmentById(Long id) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban"));
         return departmentMapper.toDTO(department);
     }
 
     @Override
-    public ResponseDepartmentDto getDepartmentByCode(String code) {
+    public DepartmentDto getDepartmentByCode(String code) {
         Department department = departmentRepository.findByCode(code);
         if (department == null) {
             throw new ResourceNotFoundException("Không tìm thấy phòng ban");
@@ -60,7 +66,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ResponseDepartmentDto createDepartment(CreateDepartmentDto departmentDto) {
+    public DepartmentDto createDepartment(CreateDepartmentDto departmentDto) {
         if (departmentRepository.existsByCode(departmentDto.getCode())) {
             throw new DuplicateResourceException("Mã phòng ban đã tồn tại");
         }
@@ -86,7 +92,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ResponseDepartmentDto updateDepartment(UpdateDepartmentDto departmentDto) {
+    public DepartmentDto updateDepartment(UpdateDepartmentDto departmentDto) {
         Department department = departmentRepository.findById(departmentDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban"));
 
@@ -102,17 +108,17 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ResponseDepartmentDto deleteDepartment(Long id) {
+    public DepartmentDto deleteDepartment(Long id) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban"));
 
-        ResponseDepartmentDto dto = departmentMapper.toDTO(department);
+        DepartmentDto dto = departmentMapper.toDTO(department);
         departmentRepository.delete(department);
         return dto;
     }
 
     @Override
-    public ResponseDepartmentDto assignCompany(AssignCompanyDto dto) {
+    public DepartmentDto assignCompany(AssignCompanyDto dto) {
         Department department = departmentRepository.findById(dto.getDepartmentId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban"));
         Company company = companyRepository.findById(dto.getCompanyId())
@@ -128,7 +134,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ResponseDepartmentDto assignParent(AssignParentDto dto) {
+    public DepartmentDto assignParent(AssignParentDto dto) {
         Department department = departmentRepository.findById(dto.getDepartmentId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban"));
         Department parent = departmentRepository.findById(dto.getParentId())

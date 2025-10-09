@@ -2,9 +2,9 @@ package com.example.demo.company.service;
 
 import com.example.demo.shared.exception.DuplicateResourceException;
 import com.example.demo.shared.exception.ResourceNotFoundException;
-import com.example.demo.company.dto.CreateCompanyDto;
-import com.example.demo.company.dto.ResponseCompanyDto;
-import com.example.demo.company.dto.UpdateCompanyDto;
+import com.example.demo.company.dto.request.CreateCompanyDto;
+import com.example.demo.company.dto.response.CompanyDto;
+import com.example.demo.company.dto.request.UpdateCompanyDto;
 import com.example.demo.company.entity.Company;
 import com.example.demo.company.CompanyRepository;
 import com.example.demo.company.dto.CompanyMapper;
@@ -28,39 +28,39 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<ResponseCompanyDto> getAllCompanies() {
+    public List<CompanyDto> getAllCompanies() {
         return companyMapper.toDTOs(companyRepository.findAll());
     }
 
     @Override
-    public PagedResponse<ResponseCompanyDto> getAllCompanies(Pageable pageable){
+    public PagedResponse<CompanyDto> getAllCompanies(Pageable pageable){
         Page<Company> page = companyRepository.findAll(pageable);
-        List<ResponseCompanyDto> contentMapped = companyMapper.toDTOs(page.getContent());
+        List<CompanyDto> contentMapped = companyMapper.toDTOs(page.getContent());
 
         return PagedUtil.ToPagedResponse(page, contentMapped);
     }
 
     @Override
-    public ResponseCompanyDto getCompanyById(Long id) {
+    public CompanyDto getCompanyById(Long id) {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công ty"));
         return companyMapper.toDTO(company);
     }
 
     @Override
-    public ResponseCompanyDto getCompanyByCode(String code) {
+    public CompanyDto getCompanyByCode(String code) {
         Company company = companyRepository.findByCode(code)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công ty"));
         return companyMapper.toDTO(company);
     }
 
     @Override
-    public List<ResponseCompanyDto> getCompaniesByName(String name) {
+    public List<CompanyDto> getCompaniesByName(String name) {
         return companyMapper.toDTOs(companyRepository.findByName(name));
     }
 
     @Override
-    public ResponseCompanyDto createCompany(CreateCompanyDto companyDto) {
+    public CompanyDto createCompany(CreateCompanyDto companyDto) {
         if (companyRepository.existsByCode(companyDto.getCode())) {
             throw new DuplicateResourceException("Mã công ty đã tồn tại");
         }
@@ -71,7 +71,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public ResponseCompanyDto updateCompany(UpdateCompanyDto companyDto) {
+    public CompanyDto updateCompany(UpdateCompanyDto companyDto) {
         Company company = companyRepository.findById(companyDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công ty"));
         
@@ -87,11 +87,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public ResponseCompanyDto deleteCompanyById(Long id) {
+    public CompanyDto deleteCompanyById(Long id) {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công ty"));
 
-        ResponseCompanyDto dto = companyMapper.toDTO(company);
+        CompanyDto dto = companyMapper.toDTO(company);
         companyRepository.delete(company);
         return dto;
     }

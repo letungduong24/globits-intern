@@ -1,5 +1,9 @@
 package com.example.demo.department.dto;
 
+import com.example.demo.department.dto.request.CreateDepartmentDto;
+import com.example.demo.department.dto.request.UpdateDepartmentDto;
+import com.example.demo.department.dto.response.BasicDepartmentDto;
+import com.example.demo.department.dto.response.DepartmentDto;
 import com.example.demo.department.entity.Department;
 import org.springframework.stereotype.Component;
 
@@ -9,12 +13,12 @@ import java.util.stream.Collectors;
 @Component
 public class DepartmentMapper {
 
-    public ResponseDepartmentDto toDTO(Department department) {
+    public DepartmentDto toDTO(Department department) {
         if (department == null) {
             return null;
         }
         
-        return ResponseDepartmentDto.builder()
+        return DepartmentDto.builder()
                 .id(department.getId())
                 .name(department.getName())
                 .code(department.getCode())
@@ -23,7 +27,7 @@ public class DepartmentMapper {
                 .build();
     }
 
-    public List<ResponseDepartmentDto> toDTOs(List<Department> departments) {
+    public List<DepartmentDto> toDTOs(List<Department> departments) {
         if (departments == null) {
             return null;
         }

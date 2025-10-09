@@ -1,14 +1,14 @@
 package com.example.demo.project;
 
-import com.example.demo.project.dto.*;
+import com.example.demo.project.dto.request.*;
+import com.example.demo.project.dto.response.BasicProjectDto;
+import com.example.demo.project.dto.response.ProjectDto;
 import com.example.demo.project.service.ProjectService;
 import com.example.demo.shared.request.PaginationRequest;
 import com.example.demo.shared.response.ApiResponse;
 import com.example.demo.shared.response.PagedResponse;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +26,10 @@ public class ProjectController {
     }
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<List<ResponseProjectDto>>> getProjects(){
-        List<ResponseProjectDto> projects = projectService.getAllProjects();
+    public ResponseEntity<ApiResponse<List<BasicProjectDto>>> getProjects(){
+        List<BasicProjectDto> projects = projectService.getAllProjects();
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<List<ResponseProjectDto>>builder()
+                .body(ApiResponse.<List<BasicProjectDto>>builder()
                         .success(true)
                         .message("Lấy projects thành công")
                         .data(projects)
@@ -37,14 +37,14 @@ public class ProjectController {
     }
 
     @GetMapping("/paged")
-    public ResponseEntity<ApiResponse<PagedResponse<ResponseProjectDto>>> getProjectsPaged(
+    public ResponseEntity<ApiResponse<PagedResponse<BasicProjectDto>>> getProjectsPaged(
             PaginationRequest paginationRequest
     ){
         Pageable pageable = paginationRequest.toPageable();
         
-        PagedResponse<ResponseProjectDto> pagedProjects = projectService.getAllProjects(pageable);
+        PagedResponse<BasicProjectDto> pagedProjects = projectService.getAllProjects(pageable);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<PagedResponse<ResponseProjectDto>>builder()
+                .body(ApiResponse.<PagedResponse<BasicProjectDto>>builder()
                         .success(true)
                         .message("Lấy projects phân trang thành công")
                         .data(pagedProjects)
@@ -52,10 +52,10 @@ public class ProjectController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<ResponseProjectDto>> createProject(@Valid @RequestBody CreateProjectDto project){
-        ResponseProjectDto created = projectService.createProject(project);
+    public ResponseEntity<ApiResponse<ProjectDto>> createProject(@Valid @RequestBody CreateProjectDto project){
+        ProjectDto created = projectService.createProject(project);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.<ResponseProjectDto>builder()
+                .body(ApiResponse.<ProjectDto>builder()
                         .success(true)
                         .message("Tạo dự án thành công")
                         .data(created)
@@ -63,10 +63,10 @@ public class ProjectController {
     }
 
     @PutMapping()
-    public ResponseEntity<ApiResponse<ResponseProjectDto>> updateProject(@Valid @RequestBody UpdateProjectDto projectDto){
-        ResponseProjectDto updated = projectService.updateProject(projectDto);
+    public ResponseEntity<ApiResponse<ProjectDto>> updateProject(@Valid @RequestBody UpdateProjectDto projectDto){
+        ProjectDto updated = projectService.updateProject(projectDto);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseProjectDto>builder()
+                .body(ApiResponse.<ProjectDto>builder()
                         .success(true)
                         .message("Cập nhật dự án thành công")
                         .data(updated)
@@ -74,10 +74,10 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<ResponseProjectDto>> deleteProjectById(@PathVariable Long id) {
-        ResponseProjectDto deleted = projectService.deleteProject(id);
+    public ResponseEntity<ApiResponse<ProjectDto>> deleteProjectById(@PathVariable Long id) {
+        ProjectDto deleted = projectService.deleteProject(id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseProjectDto>builder()
+                .body(ApiResponse.<ProjectDto>builder()
                         .success(true)
                         .message("Xóa dự án thành công")
                         .data(deleted)
@@ -85,10 +85,10 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ResponseProjectDto>> getProjectById(@PathVariable Long id){
-        ResponseProjectDto project = projectService.getProjectById(id);
+    public ResponseEntity<ApiResponse<ProjectDto>> getProjectById(@PathVariable Long id){
+        ProjectDto project = projectService.getProjectById(id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseProjectDto>builder()
+                .body(ApiResponse.<ProjectDto>builder()
                         .success(true)
                         .message("Lấy project thành công")
                         .data(project)
@@ -96,10 +96,10 @@ public class ProjectController {
     }
 
     @GetMapping("/{name}/by-name")
-    public ResponseEntity<ApiResponse<List<ResponseProjectDto>>> getProjectsByName(@PathVariable String name){
-        List<ResponseProjectDto> projects = projectService.getProjectsByName(name);
+    public ResponseEntity<ApiResponse<List<BasicProjectDto>>> getProjectsByName(@PathVariable String name){
+        List<BasicProjectDto> projects = projectService.getProjectsByName(name);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<List<ResponseProjectDto>>builder()
+                .body(ApiResponse.<List<BasicProjectDto>>builder()
                         .success(true)
                         .message("Lấy projects thành công")
                         .data(projects)
@@ -107,10 +107,10 @@ public class ProjectController {
     }
 
     @GetMapping("/{code}/by-code")
-    public ResponseEntity<ApiResponse<ResponseProjectDto>> getProjectByCode(@PathVariable String code){
-        ResponseProjectDto project = projectService.getProjectByCode(code);
+    public ResponseEntity<ApiResponse<ProjectDto>> getProjectByCode(@PathVariable String code){
+        ProjectDto project = projectService.getProjectByCode(code);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseProjectDto>builder()
+                .body(ApiResponse.<ProjectDto>builder()
                         .success(true)
                         .message("Lấy project thành công")
                         .data(project)
@@ -129,10 +129,10 @@ public class ProjectController {
     }
 
     @PutMapping("/assign-company")
-    public ResponseEntity<ApiResponse<ResponseProjectDto>> assignCompany(@Valid @RequestBody AssignCompanyDto assignCompanyDto){
-        ResponseProjectDto assigned = projectService.assignCompany(assignCompanyDto);
+    public ResponseEntity<ApiResponse<ProjectDto>> assignCompany(@Valid @RequestBody AssignCompanyDto assignCompanyDto){
+        ProjectDto assigned = projectService.assignCompany(assignCompanyDto);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseProjectDto>builder()
+                .body(ApiResponse.<ProjectDto>builder()
                         .success(true)
                         .message("Gán công ty cho dự án thành công")
                         .data(assigned)
@@ -140,10 +140,10 @@ public class ProjectController {
     }
 
     @PutMapping("/assign-person")
-    public ResponseEntity<ApiResponse<ResponseProjectDto>> assignPerson(@Valid @RequestBody AssignPersonDto assignPersonDto){
-        ResponseProjectDto assigned = projectService.assignPerson(assignPersonDto);
+    public ResponseEntity<ApiResponse<ProjectDto>> assignPerson(@Valid @RequestBody AssignPersonDto assignPersonDto){
+        ProjectDto assigned = projectService.assignPerson(assignPersonDto);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseProjectDto>builder()
+                .body(ApiResponse.<ProjectDto>builder()
                         .success(true)
                         .message("Gán person cho dự án thành công")
                         .data(assigned)
@@ -151,10 +151,10 @@ public class ProjectController {
     }
 
     @PutMapping("/remove-person")
-    public ResponseEntity<ApiResponse<ResponseProjectDto>> removePerson(@Valid @RequestBody AssignPersonDto assignPersonDto){
-        ResponseProjectDto removed = projectService.removePerson(assignPersonDto);
+    public ResponseEntity<ApiResponse<ProjectDto>> removePerson(@Valid @RequestBody AssignPersonDto assignPersonDto){
+        ProjectDto removed = projectService.removePerson(assignPersonDto);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<ResponseProjectDto>builder()
+                .body(ApiResponse.<ProjectDto>builder()
                         .success(true)
                         .message("Xóa person khỏi dự án thành công")
                         .data(removed)

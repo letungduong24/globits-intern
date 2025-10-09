@@ -1,20 +1,24 @@
 package com.example.demo.person.dto;
 
+import com.example.demo.person.dto.request.CreatePersonDto;
+import com.example.demo.person.dto.request.UpdatePersonDto;
+import com.example.demo.person.dto.response.PersonDto;
 import com.example.demo.person.entity.Person;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 public class PersonMapper {
 
-    public ResponsePersonDto toDTO(Person person) {
+    public PersonDto toDTO(Person person) {
         if (person == null) {
             return null;
         }
         
-        return ResponsePersonDto.builder()
+        return PersonDto.builder()
                 .id(person.getId())
                 .fullName(person.getFullName())
                 .gender(person.getGender())
@@ -23,10 +27,11 @@ public class PersonMapper {
                 .address(person.getAddress())
                 .userId(person.getUser() != null ? person.getUser().getId() : null)
                 .companyId(person.getCompany() != null ? person.getCompany().getId() : null)
+                .companyName(person.getCompany() != null ? person.getCompany().getName() : null)
                 .build();
     }
 
-    public List<ResponsePersonDto> toDTOs(List<Person> persons) {
+    public List<PersonDto> toDTOs(List<Person> persons) {
         if (persons == null) {
             return null;
         }
@@ -34,6 +39,16 @@ public class PersonMapper {
         return persons.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    public Set<PersonDto> toDTOs(Set<Person> persons) {
+        if (persons == null) {
+            return null;
+        }
+
+        return persons.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toSet());
     }
 
     public Person toEntity(CreatePersonDto personDto) {
@@ -48,31 +63,6 @@ public class PersonMapper {
                 .phoneNumber(personDto.getPhoneNumber())
                 .address(personDto.getAddress())
                 .build();
-    }
-
-    public PersonBasicDto toBasicDTO(Person person) {
-        if (person == null) {
-            return null;
-        }
-        
-        return PersonBasicDto.builder()
-                .id(person.getId())
-                .fullName(person.getFullName())
-                .gender(person.getGender())
-                .birthDate(person.getBirthDate())
-                .phoneNumber(person.getPhoneNumber())
-                .address(person.getAddress())
-                .build();
-    }
-
-    public List<PersonBasicDto> toBasicDTOs(List<Person> persons) {
-        if (persons == null) {
-            return null;
-        }
-        
-        return persons.stream()
-                .map(this::toBasicDTO)
-                .collect(Collectors.toList());
     }
 
     public Person updateEntity(Person existingPerson, UpdatePersonDto updateDto) {

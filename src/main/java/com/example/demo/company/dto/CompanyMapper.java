@@ -1,5 +1,8 @@
 package com.example.demo.company.dto;
 
+import com.example.demo.company.dto.request.CreateCompanyDto;
+import com.example.demo.company.dto.request.UpdateCompanyDto;
+import com.example.demo.company.dto.response.CompanyDto;
 import com.example.demo.company.entity.Company;
 import org.springframework.stereotype.Component;
 
@@ -9,12 +12,12 @@ import java.util.stream.Collectors;
 @Component
 public class CompanyMapper {
 
-    public ResponseCompanyDto toDTO(Company company) {
+    public CompanyDto toDTO(Company company) {
         if (company == null) {
             return null;
         }
         
-        return ResponseCompanyDto.builder()
+        return CompanyDto.builder()
                 .id(company.getId())
                 .name(company.getName())
                 .address(company.getAddress())
@@ -22,7 +25,7 @@ public class CompanyMapper {
                 .build();
     }
 
-    public List<ResponseCompanyDto> toDTOs(List<Company> companies) {
+    public List<CompanyDto> toDTOs(List<Company> companies) {
         if (companies == null) {
             return null;
         }
