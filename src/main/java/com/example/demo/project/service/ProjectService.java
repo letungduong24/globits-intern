@@ -1,7 +1,7 @@
 package com.example.demo.project.service;
 
 import com.example.demo.project.dto.*;
-import com.example.demo.shared.PagedResponse;
+import com.example.demo.shared.response.PagedResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

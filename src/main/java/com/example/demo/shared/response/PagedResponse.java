@@ -1,11 +1,13 @@
-package com.example.demo.shared;
+package com.example.demo.shared.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

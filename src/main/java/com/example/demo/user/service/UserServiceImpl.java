@@ -2,14 +2,14 @@ package com.example.demo.user.service;
 
 import com.example.demo.role.RoleRepository;
 import com.example.demo.role.entity.Role;
-import com.example.demo.shared.Exception.DuplicateResourceException;
-import com.example.demo.shared.Exception.ResourceNotFoundException;
+import com.example.demo.shared.exception.DuplicateResourceException;
+import com.example.demo.shared.exception.ResourceNotFoundException;
 import com.example.demo.user.dto.*;
 import com.example.demo.user.entity.User;
 import com.example.demo.user.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import java.util.HashSet;
+
 import java.util.List;
 
 @Service

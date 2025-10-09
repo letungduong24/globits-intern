@@ -3,12 +3,16 @@ package com.example.demo.person.service;
 import com.example.demo.company.CompanyRepository;
 import com.example.demo.company.entity.Company;
 import com.example.demo.person.dto.*;
-import com.example.demo.shared.Exception.DuplicateResourceException;
-import com.example.demo.shared.Exception.ResourceNotFoundException;
+import com.example.demo.shared.exception.DuplicateResourceException;
+import com.example.demo.shared.exception.ResourceNotFoundException;
 import com.example.demo.person.entity.Person;
 import com.example.demo.person.PersonRepository;
+import com.example.demo.shared.response.PagedResponse;
+import com.example.demo.shared.util.PagedUtil;
 import com.example.demo.user.entity.User;
 import com.example.demo.user.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +36,14 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public List<ResponsePersonDto> getAllPersons() {
         return personMapper.toDTOs(personRepository.findAll());
+    }
+
+    @Override
+    public PagedResponse<ResponsePersonDto> getAllPersons(Pageable pageable){
+        Page<Person> page = personRepository.findAll(pageable);
+        List<ResponsePersonDto> mappedContent = personMapper.toDTOs(page.getContent());
+
+        return PagedUtil.ToPagedResponse(page, mappedContent);
     }
 
     @Override

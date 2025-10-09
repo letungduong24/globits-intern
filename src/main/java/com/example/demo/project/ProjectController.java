@@ -2,8 +2,9 @@ package com.example.demo.project;
 
 import com.example.demo.project.dto.*;
 import com.example.demo.project.service.ProjectService;
-import com.example.demo.shared.ApiResponse;
-import com.example.demo.shared.PagedResponse;
+import com.example.demo.shared.request.PaginationRequest;
+import com.example.demo.shared.response.ApiResponse;
+import com.example.demo.shared.response.PagedResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,15 +38,9 @@ public class ProjectController {
 
     @GetMapping("/paged")
     public ResponseEntity<ApiResponse<PagedResponse<ResponseProjectDto>>> getProjectsPaged(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "ASC") String sortDirection
+            PaginationRequest paginationRequest
     ){
-        Sort.Direction direction = sortDirection.equalsIgnoreCase("DESC") 
-                ? Sort.Direction.DESC 
-                : Sort.Direction.ASC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        Pageable pageable = paginationRequest.toPageable();
         
         PagedResponse<ResponseProjectDto> pagedProjects = projectService.getAllProjects(pageable);
         return ResponseEntity.status(HttpStatus.OK)

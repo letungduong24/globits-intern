@@ -1,19 +1,16 @@
 package com.example.demo.role.service;
 
-import com.example.demo.person.dto.ResponsePersonDto;
-import com.example.demo.person.entity.Person;
 import com.example.demo.role.RoleRepository;
 import com.example.demo.role.dto.CreateRoleDto;
 import com.example.demo.role.dto.ResponseRoleDto;
 import com.example.demo.role.dto.RoleMapper;
 import com.example.demo.role.dto.UpdateRoleDto;
 import com.example.demo.role.entity.Role;
-import com.example.demo.shared.Exception.DuplicateResourceException;
-import com.example.demo.shared.Exception.ResourceNotFoundException;
+import com.example.demo.shared.exception.DuplicateResourceException;
+import com.example.demo.shared.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class RoleServiceImpl implements RoleService {

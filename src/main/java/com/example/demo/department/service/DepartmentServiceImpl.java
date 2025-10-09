@@ -5,8 +5,8 @@ import com.example.demo.company.entity.Company;
 import com.example.demo.department.DepartmentRepository;
 import com.example.demo.department.dto.*;
 import com.example.demo.department.entity.Department;
-import com.example.demo.shared.Exception.DuplicateResourceException;
-import com.example.demo.shared.Exception.ResourceNotFoundException;
+import com.example.demo.shared.exception.DuplicateResourceException;
+import com.example.demo.shared.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

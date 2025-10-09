@@ -1,10 +1,12 @@
 package com.example.demo.person;
 
-import com.example.demo.country.dto.ResponseCountryDto;
 import com.example.demo.person.dto.*;
 import com.example.demo.person.service.PersonService;
-import com.example.demo.shared.ApiResponse;
+import com.example.demo.shared.request.PaginationRequest;
+import com.example.demo.shared.response.ApiResponse;
+import com.example.demo.shared.response.PagedResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,20 @@ public class PersonController {
                         .success(true)
                         .message("Lấy persons thành công")
                         .data(countries)
+                        .build());
+    }
+
+    @GetMapping("/paged")
+    public ResponseEntity<ApiResponse<PagedResponse<ResponsePersonDto>>> getPersons(
+            PaginationRequest paginationRequest
+    ){
+        Pageable pageable = paginationRequest.toPageable();
+        PagedResponse<ResponsePersonDto> pagedPerson = personService.getAllPersons(pageable);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.<PagedResponse<ResponsePersonDto>>builder()
+                        .success(true)
+                        .message("Lấy persons thành công")
+                        .data(pagedPerson)
                         .build());
     }
 

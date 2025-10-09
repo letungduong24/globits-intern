@@ -2,7 +2,7 @@ package com.example.demo.department;
 
 import com.example.demo.department.dto.*;
 import com.example.demo.department.service.DepartmentService;
-import com.example.demo.shared.ApiResponse;
+import com.example.demo.shared.response.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

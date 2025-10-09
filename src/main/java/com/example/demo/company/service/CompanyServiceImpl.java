@@ -1,13 +1,17 @@
 package com.example.demo.company.service;
 
-import com.example.demo.shared.Exception.DuplicateResourceException;
-import com.example.demo.shared.Exception.ResourceNotFoundException;
+import com.example.demo.shared.exception.DuplicateResourceException;
+import com.example.demo.shared.exception.ResourceNotFoundException;
 import com.example.demo.company.dto.CreateCompanyDto;
 import com.example.demo.company.dto.ResponseCompanyDto;
 import com.example.demo.company.dto.UpdateCompanyDto;
 import com.example.demo.company.entity.Company;
 import com.example.demo.company.CompanyRepository;
 import com.example.demo.company.dto.CompanyMapper;
+import com.example.demo.shared.response.PagedResponse;
+import com.example.demo.shared.util.PagedUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +30,14 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public List<ResponseCompanyDto> getAllCompanies() {
         return companyMapper.toDTOs(companyRepository.findAll());
+    }
+
+    @Override
+    public PagedResponse<ResponseCompanyDto> getAllCompanies(Pageable pageable){
+        Page<Company> page = companyRepository.findAll(pageable);
+        List<ResponseCompanyDto> contentMapped = companyMapper.toDTOs(page.getContent());
+
+        return PagedUtil.ToPagedResponse(page, contentMapped);
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.example.demo.user.dto.ResponseUserDto;
 import com.example.demo.user.dto.ResponseUserWithPersonDto;
 import com.example.demo.user.dto.UpdateUserDto;
 import com.example.demo.user.service.UserService;
-import com.example.demo.shared.ApiResponse;
+import com.example.demo.shared.response.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

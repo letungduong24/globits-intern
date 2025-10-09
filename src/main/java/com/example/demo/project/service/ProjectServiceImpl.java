@@ -7,9 +7,10 @@ import com.example.demo.person.entity.Person;
 import com.example.demo.project.ProjectRepository;
 import com.example.demo.project.dto.*;
 import com.example.demo.project.entity.Project;
-import com.example.demo.shared.Exception.DuplicateResourceException;
-import com.example.demo.shared.Exception.ResourceNotFoundException;
-import com.example.demo.shared.PagedResponse;
+import com.example.demo.shared.exception.DuplicateResourceException;
+import com.example.demo.shared.exception.ResourceNotFoundException;
+import com.example.demo.shared.response.PagedResponse;
+import com.example.demo.shared.util.PagedUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,18 +44,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public PagedResponse<ResponseProjectDto> getAllProjects(Pageable pageable) {
         Page<Project> projectPage = projectRepository.findAll(pageable);
-        List<ResponseProjectDto> content = projectMapper.toDTOs(projectPage.getContent());
+        List<ResponseProjectDto> contentMapped = projectMapper.toDTOs(projectPage.getContent());
         
-        return PagedResponse.<ResponseProjectDto>builder()
-                .content(content)
-                .page(projectPage.getNumber())
-                .size(projectPage.getSize())
-                .totalElements(projectPage.getTotalElements())
-                .totalPages(projectPage.getTotalPages())
-                .first(projectPage.isFirst())
-                .last(projectPage.isLast())
-                .empty(projectPage.isEmpty())
-                .build();
+        return PagedUtil.ToPagedResponse(projectPage, contentMapped);
     }
 
     @Override

@@ -4,9 +4,12 @@ import com.example.demo.company.dto.CreateCompanyDto;
 import com.example.demo.company.dto.ResponseCompanyDto;
 import com.example.demo.company.dto.UpdateCompanyDto;
 import com.example.demo.company.service.CompanyService;
-import com.example.demo.country.dto.ResponseCountryDto;
-import com.example.demo.shared.ApiResponse;
+import com.example.demo.shared.request.PaginationRequest;
+import com.example.demo.shared.response.ApiResponse;
+import com.example.demo.shared.response.PagedResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +36,21 @@ public class CompanyController {
                         .data(countries)
                         .build());
     }
+
+    @GetMapping("/paged")
+    public ResponseEntity<ApiResponse<PagedResponse<ResponseCompanyDto>>> getCompaniesPaged(
+            PaginationRequest paginationRequest
+    ){
+        Pageable pageable = paginationRequest.toPageable();
+        PagedResponse<ResponseCompanyDto> pagedCompanies = companyService.getAllCompanies(pageable);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.<PagedResponse<ResponseCompanyDto>>builder()
+                        .success(true)
+                        .message("Lây công ty thành công")
+                        .data(pagedCompanies)
+                        .build());
+    }
+
 
     @PostMapping()
     public ResponseEntity<ApiResponse<ResponseCompanyDto>> createCompany(@Valid @RequestBody CreateCompanyDto company){

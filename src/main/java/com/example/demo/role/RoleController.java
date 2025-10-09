@@ -3,16 +3,14 @@ package com.example.demo.role;
 import com.example.demo.role.dto.CreateRoleDto;
 import com.example.demo.role.dto.ResponseRoleDto;
 import com.example.demo.role.dto.UpdateRoleDto;
-import com.example.demo.role.entity.Role;
 import com.example.demo.role.service.RoleService;
-import com.example.demo.shared.ApiResponse;
+import com.example.demo.shared.response.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/roles")

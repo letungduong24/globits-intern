@@ -6,12 +6,11 @@ import com.example.demo.country.dto.CreateCountryDto;
 import com.example.demo.country.dto.ResponseCountryDto;
 import com.example.demo.country.dto.UpdateCountryDto;
 import com.example.demo.country.entity.Country;
-import com.example.demo.shared.Exception.DuplicateResourceException;
-import com.example.demo.shared.Exception.ResourceNotFoundException;
+import com.example.demo.shared.exception.DuplicateResourceException;
+import com.example.demo.shared.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CountryServiceImpl implements CountryService {
