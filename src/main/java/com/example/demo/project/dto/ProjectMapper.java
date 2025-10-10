@@ -60,7 +60,7 @@ public class ProjectMapper {
                 .id(project.getId())
                 .name(project.getName())
                 .code(project.getCode())
-                .company(project.getCompany() != null ? companyMapper.toDTO(project.getCompany()) : null)
+                .companyId(project.getCompany() != null ? project.getCompany().getId() : null)
                 .build();
     }
 

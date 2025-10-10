@@ -2,6 +2,7 @@ package com.example.demo.person.entity;
 
 import com.example.demo.company.entity.Company;
 import com.example.demo.project.entity.Project;
+import com.example.demo.task.entity.Task;
 import com.example.demo.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -47,4 +48,7 @@ public class Person {
 
     @ManyToMany(mappedBy = "persons", fetch = FetchType.LAZY)
     Set<Project> projects;
+
+    @OneToMany(mappedBy = "person", fetch = FetchType.LAZY)
+    Set<Task> tasks;
 }

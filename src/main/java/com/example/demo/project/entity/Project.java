@@ -2,6 +2,7 @@ package com.example.demo.project.entity;
 
 import com.example.demo.company.entity.Company;
 import com.example.demo.person.entity.Person;
+import com.example.demo.task.entity.Task;
 import com.example.demo.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,4 +42,7 @@ public class Project {
     )
     @Builder.Default
     Set<Person> persons = new HashSet<>();
+
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    Set<Task> tasks;
 }

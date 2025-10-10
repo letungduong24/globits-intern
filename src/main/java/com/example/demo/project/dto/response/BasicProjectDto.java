@@ -13,6 +13,6 @@ public class BasicProjectDto {
     Long id;
     String name;
     String code;
-    CompanyDto company;
+    Long companyId;
 }
 
