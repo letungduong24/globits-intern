@@ -1,4 +1,5 @@
 package com.example.demo.task;
+import com.example.demo.shared.request.PaginationRequest;
 import com.example.demo.shared.response.ApiResponse;
 import com.example.demo.shared.response.PagedResponse;
 import com.example.demo.task.dto.request.CreateTaskDto;
@@ -34,9 +35,10 @@ public class TaskController {
 
     @GetMapping("/paged")
     public ResponseEntity<ApiResponse<PagedResponse<TaskDto>>> getTasksPaged(
-            TaskSpecificationRequest taskSpecificationRequest
-    ){
-        PagedResponse<TaskDto> pagedTask = taskService.getAllTasks(taskSpecificationRequest);
+            TaskSpecificationRequest taskSpecificationRequest,
+            PaginationRequest paginationRequest
+    ) {
+        PagedResponse<TaskDto> pagedTask = taskService.getAllTasks(taskSpecificationRequest, paginationRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<PagedResponse<TaskDto>>builder()
                         .success(true)

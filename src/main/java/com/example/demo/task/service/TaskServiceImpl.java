@@ -6,6 +6,7 @@ import com.example.demo.person.entity.Person;
 import com.example.demo.project.ProjectRepository;
 import com.example.demo.project.entity.Project;
 import com.example.demo.shared.exception.ResourceNotFoundException;
+import com.example.demo.shared.request.PaginationRequest;
 import com.example.demo.shared.response.PagedResponse;
 import com.example.demo.shared.util.PagedUtil;
 import com.example.demo.task.TaskRepository;
@@ -48,8 +49,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public PagedResponse<TaskDto> getAllTasks(TaskSpecificationRequest taskSpecificationRequest) {
-        Pageable pageable = taskSpecificationRequest.getPageRequest().toPageable();
+    public PagedResponse<TaskDto> getAllTasks(TaskSpecificationRequest taskSpecificationRequest, PaginationRequest paginationRequest) {
+        Pageable pageable = paginationRequest.toPageable();
         Specification<Task> spec = TaskSpecification.filter(
                 taskSpecificationRequest.getCompanyId(),
                 taskSpecificationRequest.getProjectId(),
