@@ -5,7 +5,7 @@ import com.example.demo.task.dto.request.*;
 import com.example.demo.task.dto.response.TaskDto;
 import com.example.demo.shared.response.PagedResponse;
 import com.example.demo.task.specification.TaskSpecificationRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.core.io.Resource;
 
 import java.util.List;
 
@@ -22,4 +22,5 @@ public interface TaskService {
     TaskDto assignProject(AssignProject dto);
     TaskDto removePerson(AssignPerson dto);
     TaskDto removeProject(AssignProject dto);
+    Resource exportTasksToExcel();
 }

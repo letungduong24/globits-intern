@@ -1,6 +1,5 @@
 package com.example.demo.task.service;
 
-import com.example.demo.company.entity.Company;
 import com.example.demo.person.PersonRepository;
 import com.example.demo.person.entity.Person;
 import com.example.demo.project.ProjectRepository;
@@ -18,11 +17,18 @@ import com.example.demo.task.specification.TaskSpecification;
 import com.example.demo.task.specification.TaskSpecificationRequest;
 import com.example.demo.task.entity.Task;
 import jakarta.transaction.Transactional;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -223,5 +229,79 @@ public class TaskServiceImpl implements TaskService {
         task.setProject(null);
         Task saved = taskRepository.save(task);
         return taskMapper.toDTO(saved);
+    }
+
+    @Override
+    public Resource exportTasksToExcel() {
+        try {
+            // Get all tasks without pagination
+            List<Task> tasks = taskRepository.findAll();
+            List<TaskDto> taskDtos = taskMapper.toDTOs(tasks);
+
+            // Create workbook and sheet
+            Workbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Tasks");
+
+            // Create header row
+            Row headerRow = sheet.createRow(0);
+            String[] headers = {"Project", "Description", "Start Time", "End Time", "Priority", "Status", "Person"};
+            
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerStyle.setFont(headerFont);
+            headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            // Create data rows
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            int rowNum = 1;
+
+            for (TaskDto task : taskDtos) {
+                Row row = sheet.createRow(rowNum++);
+                
+                // Project
+                row.createCell(0).setCellValue(task.getProject() != null ? task.getProject().getName() : "");
+                
+                // Description
+                row.createCell(1).setCellValue(task.getDescription() != null ? task.getDescription() : "");
+                
+                // Start Time
+                row.createCell(2).setCellValue(task.getStartTime() != null ? task.getStartTime().format(dateFormatter) : "");
+                
+                // End Time
+                row.createCell(3).setCellValue(task.getEndTime() != null ? task.getEndTime().format(dateFormatter) : "");
+                
+                // Priority
+                row.createCell(4).setCellValue(task.getPriority() != null ? task.getPriority().toString() : "");
+                
+                // Status
+                row.createCell(5).setCellValue(task.getStatus() != null ? task.getStatus().toString() : "");
+                
+                // Person
+                row.createCell(6).setCellValue(task.getPerson() != null ? task.getPerson().getFullName() : "");
+            }
+
+            // Auto-size columns
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            // Convert workbook to byte array
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            workbook.close();
+
+            return new ByteArrayResource(outputStream.toByteArray());
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error creating Excel file", e);
+        }
     }
 }

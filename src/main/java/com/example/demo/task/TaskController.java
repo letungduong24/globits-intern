@@ -7,7 +7,10 @@ import com.example.demo.task.dto.response.TaskDto;
 import com.example.demo.task.service.TaskService;
 import com.example.demo.task.specification.TaskSpecificationRequest;
 import jakarta.validation.Valid;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -155,5 +158,19 @@ public class TaskController {
                         .message("Gỡ project khỏi task thành công")
                         .data(updated)
                         .build());
+    }
+
+    @GetMapping("/export/excel")
+    public ResponseEntity<Resource> exportTasksToExcel() {
+        Resource resource = taskService.exportTasksToExcel();
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=tasks_export.xlsx");
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 }
