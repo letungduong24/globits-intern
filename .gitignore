@@ -1,6 +1,6 @@
 HELP.md
 target/
-.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
@@ -31,3 +31,39 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Uploads ###
+uploads/
+!uploads/.gitkeep
+
+### Logs ###
+*.log
+logs/
+
+### Database ###
+*.db
+*.sqlite
+*.sqlite3
+
+### OS ###
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+### Temporary files ###
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+### Environment files ###
+.env
+.env.local
+.env.development
+.env.test
+.env.production
