@@ -9,13 +9,16 @@ import com.example.demo.shared.request.PaginationRequest;
 import com.example.demo.shared.response.ApiResponse;
 import com.example.demo.shared.response.PagedResponse;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/person")
 public class PersonController {
@@ -35,6 +38,11 @@ public class PersonController {
                         .message("Lấy persons thành công")
                         .data(countries)
                         .build());
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("Person API is working!");
     }
 
     @GetMapping("/paged")
@@ -159,5 +167,49 @@ public class PersonController {
                         .message("Lấy persons theo dự án thành công")
                         .data(persons)
                         .build());
+    }
+
+    @PostMapping("/{personId}/upload-avatar")
+    public ResponseEntity<ApiResponse<String>> uploadAvatar(
+            @PathVariable Long personId,
+            @RequestParam("file") MultipartFile file) {
+        
+        try {
+            String avatarPath = personService.uploadAvatar(personId, file);
+
+            return ResponseEntity.ok(ApiResponse.<String>builder()
+                    .success(true)
+                    .message("Upload avatar thành công")
+                    .data(avatarPath)
+                    .build());
+
+        } catch (Exception e) {
+            log.error("Error uploading avatar: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.<String>builder()
+                            .success(false)
+                            .message("Lỗi upload avatar: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    @DeleteMapping("/{personId}/remove-avatar")
+    public ResponseEntity<ApiResponse<String>> removeAvatar(@PathVariable Long personId) {
+        try {
+            personService.removeAvatar(personId);
+
+            return ResponseEntity.ok(ApiResponse.<String>builder()
+                    .success(true)
+                    .message("Xóa avatar thành công")
+                    .build());
+
+        } catch (Exception e) {
+            log.error("Error removing avatar: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.<String>builder()
+                            .success(false)
+                            .message("Lỗi xóa avatar: " + e.getMessage())
+                            .build());
+        }
     }
 }

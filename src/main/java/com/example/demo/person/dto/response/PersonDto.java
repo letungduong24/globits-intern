@@ -17,6 +17,7 @@ public class PersonDto {
     LocalDate birthDate;
     String phoneNumber;
     String address;
+    String avatar;
     Long userId;
     Long companyId;
     String companyName;

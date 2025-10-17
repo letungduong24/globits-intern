@@ -12,12 +12,14 @@ import com.example.demo.shared.exception.ResourceNotFoundException;
 import com.example.demo.person.entity.Person;
 import com.example.demo.person.PersonRepository;
 import com.example.demo.shared.response.PagedResponse;
+import com.example.demo.shared.service.FileUploadService;
 import com.example.demo.shared.util.PagedUtil;
 import com.example.demo.user.entity.User;
 import com.example.demo.user.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,12 +31,14 @@ public class PersonServiceImpl implements PersonService {
     private final PersonMapper personMapper;
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
+    private final FileUploadService fileUploadService;
 
-    public PersonServiceImpl(PersonRepository personRepository, PersonMapper personMapper, UserRepository userRepository, CompanyRepository companyRepository) {
+    public PersonServiceImpl(PersonRepository personRepository, PersonMapper personMapper, UserRepository userRepository, CompanyRepository companyRepository, FileUploadService fileUploadService) {
         this.personRepository = personRepository;
         this.personMapper = personMapper;
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
+        this.fileUploadService = fileUploadService;
     }
 
     @Override
@@ -138,5 +142,44 @@ public class PersonServiceImpl implements PersonService {
         }
         person.setCompany(company);
         return personMapper.toDTO(personRepository.save(person));
+    }
+
+    @Override
+    public String uploadAvatar(Long personId, MultipartFile file) {
+        try {
+            // Find person
+            Person person = personRepository.findById(personId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy person với ID: " + personId));
+
+            // Delete old avatar if exists
+            if (person.getAvatar() != null && !person.getAvatar().isEmpty()) {
+                fileUploadService.deleteAvatar(person.getAvatar());
+            }
+
+            // Upload new avatar
+            String avatarPath = fileUploadService.uploadAvatar(file);
+            
+            // Update person with new avatar path
+            person.setAvatar(avatarPath);
+            personRepository.save(person);
+
+            return avatarPath;
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi upload avatar: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void removeAvatar(Long personId) {
+        // Find person
+        Person person = personRepository.findById(personId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy person với ID: " + personId));
+
+        // Delete avatar file if exists
+        if (person.getAvatar() != null && !person.getAvatar().isEmpty()) {
+            fileUploadService.deleteAvatar(person.getAvatar());
+            person.setAvatar(null);
+            personRepository.save(person);
+        }
     }
 }

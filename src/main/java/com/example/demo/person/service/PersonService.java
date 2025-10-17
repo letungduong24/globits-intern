@@ -22,4 +22,6 @@ public interface PersonService {
     PersonDto updatePerson(UpdatePersonDto person);
     PersonDto deletePersonById(Long id);
     PersonDto assignCompany(AssignCompanyDto dto);
+    String uploadAvatar(Long personId, org.springframework.web.multipart.MultipartFile file);
+    void removeAvatar(Long personId);
 }

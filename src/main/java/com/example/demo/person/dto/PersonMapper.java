@@ -25,6 +25,7 @@ public class PersonMapper {
                 .birthDate(person.getBirthDate())
                 .phoneNumber(person.getPhoneNumber())
                 .address(person.getAddress())
+                .avatar(person.getAvatar())
                 .userId(person.getUser() != null ? person.getUser().getId() : null)
                 .companyId(person.getCompany() != null ? person.getCompany().getId() : null)
                 .companyName(person.getCompany() != null ? person.getCompany().getName() : null)
