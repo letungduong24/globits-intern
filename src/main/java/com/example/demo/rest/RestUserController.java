@@ -1,9 +1,6 @@
 package com.example.demo.rest;
 
-import com.example.demo.user.dto.request.AssignRoleDto;
-import com.example.demo.user.dto.request.CreateUserDto;
-import com.example.demo.user.dto.response.UserDto;
-import com.example.demo.user.dto.request.UpdateUserDto;
+import com.example.demo.dto.UserDto;
 import com.example.demo.service.UserService;
 import com.example.demo.shared.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -35,7 +32,7 @@ public class RestUserController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<UserDto>> createUser(@Valid @RequestBody CreateUserDto user){
+    public ResponseEntity<ApiResponse<UserDto>> createUser(@Valid @RequestBody UserDto user){
         UserDto created = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<UserDto>builder()
@@ -46,7 +43,7 @@ public class RestUserController {
     }
 
     @PutMapping()
-    public ResponseEntity<ApiResponse<UserDto>> updateUser(@Valid @RequestBody UpdateUserDto userDto){
+    public ResponseEntity<ApiResponse<UserDto>> updateUser(@Valid @RequestBody UserDto userDto){
         UserDto updated = userService.updateUser(userDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<UserDto>builder()
@@ -89,9 +86,9 @@ public class RestUserController {
                         .build());
     }
 
-    @PostMapping("/assign-role")
-    public ResponseEntity<ApiResponse<UserDto>> assignRole(@Valid @RequestBody AssignRoleDto assignRoleDto){
-        UserDto user = userService.assignRole(assignRoleDto);
+    @PostMapping("/{userId}/assign-role/{roleId}")
+    public ResponseEntity<ApiResponse<UserDto>> assignRole(@PathVariable Long userId, @PathVariable Long roleId){
+        UserDto user = userService.assignRole(userId, roleId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<UserDto>builder()
                         .success(true)
@@ -100,9 +97,9 @@ public class RestUserController {
                         .build());
     }
 
-    @PostMapping("/remove-role")
-    public ResponseEntity<ApiResponse<UserDto>> removeRole(@Valid @RequestBody AssignRoleDto assignRoleDto){
-        UserDto user = userService.removeRole(assignRoleDto);
+    @PostMapping("/{userId}/remove-role/{roleId}")
+    public ResponseEntity<ApiResponse<UserDto>> removeRole(@PathVariable Long userId, @PathVariable Long roleId){
+        UserDto user = userService.removeRole(userId, roleId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<UserDto>builder()
                         .success(true)

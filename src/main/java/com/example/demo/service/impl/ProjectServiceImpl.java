@@ -5,10 +5,7 @@ import com.example.demo.domain.Company;
 import com.example.demo.repositories.PersonRepository;
 import com.example.demo.domain.Person;
 import com.example.demo.repositories.ProjectRepository;
-import com.example.demo.project.dto.*;
-import com.example.demo.project.dto.request.*;
-import com.example.demo.project.dto.response.BasicProjectDto;
-import com.example.demo.project.dto.response.ProjectDto;
+import com.example.demo.dto.ProjectDto;
 import com.example.demo.domain.Project;
 import com.example.demo.service.ProjectService;
 import com.example.demo.shared.exception.DuplicateResourceException;
@@ -28,62 +25,57 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final CompanyRepository companyRepository;
     private final PersonRepository personRepository;
-    private final ProjectMapper projectMapper;
 
     public ProjectServiceImpl(ProjectRepository projectRepository, 
                                CompanyRepository companyRepository,
-                               PersonRepository personRepository,
-                               ProjectMapper projectMapper) {
+                               PersonRepository personRepository) {
         this.projectRepository = projectRepository;
         this.companyRepository = companyRepository;
         this.personRepository = personRepository;
-        this.projectMapper = projectMapper;
     }
 
     @Override
-    public List<BasicProjectDto> getAllProjects() {
-        return projectMapper.toBasicDTOs(projectRepository.findAll());
+    public List<ProjectDto> getAllProjects() {
+        return projectRepository.findAllAsDto();
     }
 
     @Override
-    public PagedResponse<BasicProjectDto> getAllProjects(Pageable pageable) {
+    public PagedResponse<ProjectDto> getAllProjects(Pageable pageable) {
         Page<Project> projectPage = projectRepository.findAll(pageable);
-        List<BasicProjectDto> contentMapped = projectMapper.toBasicDTOs(projectPage.getContent());
+        List<ProjectDto> contentMapped = projectRepository.findAllAsDto();
         
         return PagedUtil.ToPagedResponse(projectPage, contentMapped);
     }
 
     @Override
     public ProjectDto getProjectById(Long id) {
-        Project project = projectRepository.findById(id)
+        return projectRepository.findByIdAsDto(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy dự án"));
-        return projectMapper.toDTO(project);
     }
 
     @Override
     public ProjectDto getProjectByCode(String code) {
-        Project project = projectRepository.findByCode(code)
+        return projectRepository.findByCodeAsDto(code)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy dự án"));
-        return projectMapper.toDTO(project);
     }
 
     @Override
-    public List<BasicProjectDto> getProjectsByName(String name) {
-        return projectMapper.toBasicDTOs(projectRepository.findByName(name));
+    public List<ProjectDto> getProjectsByName(String name) {
+        return projectRepository.findByNameAsDto(name);
     }
 
     @Override
-    public List<BasicProjectDto> getProjectsByCompanyId(Long companyId) {
-        return projectMapper.toBasicDTOs(projectRepository.findByCompanyId(companyId));
+    public List<ProjectDto> getProjectsByCompanyId(Long companyId) {
+        return projectRepository.findByCompanyIdAsDto(companyId);
     }
 
     @Override
-    public ProjectDto createProject(CreateProjectDto projectDto) {
+    public ProjectDto createProject(ProjectDto projectDto) {
         if (projectRepository.existsByCode(projectDto.getCode())) {
             throw new DuplicateResourceException("Mã dự án đã tồn tại");
         }
 
-        Project project = projectMapper.toEntity(projectDto);
+        Project project = projectDto.toEntity();
 
         // Set company if provided
         if (projectDto.getCompanyId() != null) {
@@ -93,11 +85,11 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         Project saved = projectRepository.save(project);
-        return projectMapper.toDTO(saved);
+        return ProjectDto.fromEntity(saved);
     }
 
     @Override
-    public ProjectDto updateProject(UpdateProjectDto projectDto) {
+    public ProjectDto updateProject(ProjectDto projectDto) {
         Project project = projectRepository.findById(projectDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy dự án"));
 
@@ -107,43 +99,52 @@ public class ProjectServiceImpl implements ProjectService {
             }
         }
 
-        projectMapper.updateEntity(project, projectDto);
+        // Cập nhật các trường
+        if (projectDto.getName() != null) {
+            project.setName(projectDto.getName());
+        }
+        if (projectDto.getCode() != null) {
+            project.setCode(projectDto.getCode());
+        }
+        if (projectDto.getDescription() != null) {
+            project.setDescription(projectDto.getDescription());
+        }
+        
         Project saved = projectRepository.save(project);
-        return projectMapper.toDTO(saved);
+        return ProjectDto.fromEntity(saved);
     }
 
     @Override
     public ProjectDto deleteProject(Long id) {
-        Project project = projectRepository.findById(id)
+        ProjectDto dto = projectRepository.findByIdAsDto(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy dự án"));
-
-        ProjectDto dto = projectMapper.toDTO(project);
-        projectRepository.delete(project);
+        
+        projectRepository.deleteById(id);
         return dto;
     }
 
     @Override
-    public ProjectDto assignCompany(AssignCompanyDto dto) {
-        Project project = projectRepository.findById(dto.getProjectId())
+    public ProjectDto assignCompany(Long projectId, Long companyId) {
+        Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy dự án"));
-        Company company = companyRepository.findById(dto.getCompanyId())
+        Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công ty"));
 
-        if (project.getCompany() != null && project.getCompany().getId().equals(dto.getCompanyId())) {
+        if (project.getCompany() != null && project.getCompany().getId().equals(companyId)) {
             throw new DuplicateResourceException("Dự án đã thuộc công ty này");
         }
 
         project.setCompany(company);
         Project saved = projectRepository.save(project);
-        return projectMapper.toDTO(saved);
+        return ProjectDto.fromEntity(saved);
     }
 
     @Override
     @Transactional
-    public ProjectDto assignPerson(AssignPersonDto dto) {
-        Project project = projectRepository.findById(dto.getProjectId())
+    public ProjectDto assignPerson(Long projectId, Long personId) {
+        Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy dự án"));
-        Person person = personRepository.findById(dto.getPersonId())
+        Person person = personRepository.findById(personId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy person"));
 
         if (project.getCompany() == null) {
@@ -164,14 +165,14 @@ public class ProjectServiceImpl implements ProjectService {
 
         project.getPersons().add(person);
         Project saved = projectRepository.save(project);
-        return projectMapper.toDTO(saved);
+        return ProjectDto.fromEntity(saved);
     }
 
     @Override
-    public ProjectDto removePerson(AssignPersonDto dto) {
-        Project project = projectRepository.findById(dto.getProjectId())
+    public ProjectDto removePerson(Long projectId, Long personId) {
+        Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy dự án"));
-        Person person = personRepository.findById(dto.getPersonId())
+        Person person = personRepository.findById(personId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy person"));
 
         if (project.getPersons() == null || !project.getPersons().contains(person)) {
@@ -180,7 +181,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         project.getPersons().remove(person);
         Project saved = projectRepository.save(project);
-        return projectMapper.toDTO(saved);
+        return ProjectDto.fromEntity(saved);
     }
 }
 

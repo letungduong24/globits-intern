@@ -1,10 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.shared.request.PaginationRequest;
-import com.example.demo.task.dto.request.*;
-import com.example.demo.task.dto.response.TaskDto;
+import com.example.demo.dto.TaskDto;
 import com.example.demo.shared.response.PagedResponse;
-import com.example.demo.task.specification.TaskSpecificationRequest;
+import com.example.demo.specification.request.TaskSpecificationRequest;
 import org.springframework.core.io.Resource;
 
 import java.util.List;
@@ -15,12 +14,12 @@ public interface TaskService {
     TaskDto getTaskById(Long id);
     List<TaskDto> getTasksByPersonId(Long personId);
     List<TaskDto> getTasksByProjectId(Long projectId);
-    TaskDto createTask(CreateTaskDto taskDto);
-    TaskDto updateTask(UpdateTaskDto taskDto);
+    TaskDto createTask(TaskDto taskDto);
+    TaskDto updateTask(TaskDto taskDto);
     TaskDto deleteTask(Long id);
-    TaskDto assignPerson(AssignPerson dto);
-    TaskDto assignProject(AssignProject dto);
-    TaskDto removePerson(AssignPerson dto);
-    TaskDto removeProject(AssignProject dto);
+    TaskDto assignPerson(Long taskId, Long personId);
+    TaskDto assignProject(Long taskId, Long projectId);
+    TaskDto removePerson(Long taskId, Long personId);
+    TaskDto removeProject(Long taskId, Long projectId);
     Resource exportTasksToExcel();
 }

@@ -1,8 +1,6 @@
 package com.example.demo.rest;
 
-import com.example.demo.role.dto.request.CreateRoleDto;
-import com.example.demo.role.dto.response.RoleDto;
-import com.example.demo.role.dto.request.UpdateRoleDto;
+import com.example.demo.dto.RoleDto;
 import com.example.demo.service.RoleService;
 import com.example.demo.shared.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -56,7 +54,7 @@ public class RestRoleController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<RoleDto>> createRole(@Valid @RequestBody CreateRoleDto createRoleDto){
+    public ResponseEntity<ApiResponse<RoleDto>> createRole(@Valid @RequestBody RoleDto createRoleDto){
         RoleDto created = roleService.createRole(createRoleDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<RoleDto>builder()
@@ -67,7 +65,7 @@ public class RestRoleController {
     }
 
     @PutMapping()
-    public ResponseEntity<ApiResponse<RoleDto>> updateRole(@Valid @RequestBody UpdateRoleDto updateRoleDto){
+    public ResponseEntity<ApiResponse<RoleDto>> updateRole(@Valid @RequestBody RoleDto updateRoleDto){
         RoleDto updated = roleService.updateRole(updateRoleDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<RoleDto>builder()

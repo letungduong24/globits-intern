@@ -1,10 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.repositories.CountryRepository;
-import com.example.demo.country.dto.CountryMapper;
-import com.example.demo.country.dto.request.CreateCountryDto;
-import com.example.demo.country.dto.response.CountryDto;
-import com.example.demo.country.dto.request.UpdateCountryDto;
+import com.example.demo.dto.CountryDto;
 import com.example.demo.domain.Country;
 import com.example.demo.service.CountryService;
 import com.example.demo.shared.exception.DuplicateResourceException;
@@ -17,50 +14,44 @@ import java.util.List;
 public class CountryServiceImpl implements CountryService {
 
     private final CountryRepository countryRepository;
-    private final CountryMapper countryMapper;
 
-    public CountryServiceImpl(CountryRepository countryRepository, CountryMapper countryMapper) {
-
+    public CountryServiceImpl(CountryRepository countryRepository) {
         this.countryRepository = countryRepository;
-        this.countryMapper = countryMapper;
     }
 
     @Override
     public List<CountryDto> getAllCountries() {
-
-        return countryMapper.toDTOs(countryRepository.findAll());
+        return countryRepository.findAllAsDto();
     }
 
     @Override
     public List<CountryDto> getCountriesByName(String name) {
-        return countryMapper.toDTOs(countryRepository.findByNameContainingIgnoreCase(name));
+        return countryRepository.findByNameContainingIgnoreCaseAsDto(name);
     }
 
     @Override
     public CountryDto getCountryById(Long id) {
-        Country country = countryRepository.findById(id)
+        return countryRepository.findByIdAsDto(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy country"));
-        return countryMapper.toDTO(country);
     }
 
     @Override
     public CountryDto getCountryByCode(String code) {
-        Country country = countryRepository.findByCode(code)
+        return countryRepository.findByCodeAsDto(code)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy country"));
-        return countryMapper.toDTO(country);
     }
 
     @Override
-    public CountryDto createCountry(CreateCountryDto countryDto) {
+    public CountryDto createCountry(CountryDto countryDto) {
         countryRepository.findByCode(countryDto.getCode())
                 .ifPresent(c -> { throw new DuplicateResourceException("Country đã tồn tại"); });
-        Country country = countryMapper.toEntity(countryDto);
+        Country country = countryDto.toEntity();
         Country saved = countryRepository.save(country);
-        return countryMapper.toDTO(saved);
+        return CountryDto.fromEntity(saved);
     }
 
     @Override
-    public CountryDto updateCountry(UpdateCountryDto countryDto) {
+    public CountryDto updateCountry(CountryDto countryDto) {
         Country country = countryRepository.findById(countryDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy country"));
 
@@ -72,24 +63,27 @@ public class CountryServiceImpl implements CountryService {
             throw new DuplicateResourceException("Code đã tồn tại");
         }
 
-        countryMapper.updateEntity(country, countryDto);
-        countryRepository.save(country);
-        return countryMapper.toDTO(country);
+        // Cập nhật các trường
+        if (countryDto.getName() != null) {
+            country.setName(countryDto.getName());
+        }
+        if (countryDto.getCode() != null) {
+            country.setCode(countryDto.getCode());
+        }
+        if (countryDto.getDescription() != null) {
+            country.setDescription(countryDto.getDescription());
+        }
+        
+        Country saved = countryRepository.save(country);
+        return CountryDto.fromEntity(saved);
     }
 
     @Override
     public CountryDto deleteCountryById(Long id) {
-        Country country = countryRepository.findById(id)
+        CountryDto dto = countryRepository.findByIdAsDto(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy country"));
-
-        CountryDto dto = CountryDto.builder()
-                .id(country.getId())
-                .code(country.getCode())
-                .name(country.getName())
-                .build();
-
-        countryRepository.delete(country);
-
+        
+        countryRepository.deleteById(id);
         return dto;
     }
 

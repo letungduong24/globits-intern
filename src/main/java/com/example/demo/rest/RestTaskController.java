@@ -2,10 +2,9 @@ package com.example.demo.rest;
 import com.example.demo.shared.request.PaginationRequest;
 import com.example.demo.shared.response.ApiResponse;
 import com.example.demo.shared.response.PagedResponse;
-import com.example.demo.task.dto.request.*;
-import com.example.demo.task.dto.response.TaskDto;
+import com.example.demo.dto.TaskDto;
 import com.example.demo.service.TaskService;
-import com.example.demo.task.specification.TaskSpecificationRequest;
+import com.example.demo.specification.request.TaskSpecificationRequest;
 import jakarta.validation.Valid;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -84,7 +83,7 @@ public class RestTaskController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<TaskDto>> createTask(@Valid @RequestBody CreateTaskDto taskDto){
+    public ResponseEntity<ApiResponse<TaskDto>> createTask(@Valid @RequestBody TaskDto taskDto){
         TaskDto created = taskService.createTask(taskDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<TaskDto>builder()
@@ -95,7 +94,7 @@ public class RestTaskController {
     }
 
     @PutMapping()
-    public ResponseEntity<ApiResponse<TaskDto>> updateTask(@Valid @RequestBody UpdateTaskDto taskDto) {
+    public ResponseEntity<ApiResponse<TaskDto>> updateTask(@Valid @RequestBody TaskDto taskDto) {
         TaskDto updated = taskService.updateTask(taskDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<TaskDto>builder()
@@ -116,9 +115,9 @@ public class RestTaskController {
                         .build());
     }
 
-    @PostMapping("/assign-person")
-    public ResponseEntity<ApiResponse<TaskDto>> assignPerson(@Valid @RequestBody AssignPerson dto) {
-        TaskDto updated = taskService.assignPerson(dto);
+    @PostMapping("/{taskId}/assign-person/{personId}")
+    public ResponseEntity<ApiResponse<TaskDto>> assignPerson(@PathVariable Long taskId, @PathVariable Long personId) {
+        TaskDto updated = taskService.assignPerson(taskId, personId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<TaskDto>builder()
                         .success(true)
@@ -127,9 +126,9 @@ public class RestTaskController {
                         .build());
     }
 
-    @PostMapping("/assign-project")
-    public ResponseEntity<ApiResponse<TaskDto>> assignProject(@Valid @RequestBody AssignProject dto) {
-        TaskDto updated = taskService.assignProject(dto);
+    @PostMapping("/{taskId}/assign-project/{projectId}")
+    public ResponseEntity<ApiResponse<TaskDto>> assignProject(@PathVariable Long taskId, @PathVariable Long projectId) {
+        TaskDto updated = taskService.assignProject(taskId, projectId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<TaskDto>builder()
                         .success(true)
@@ -138,9 +137,9 @@ public class RestTaskController {
                         .build());
     }
 
-    @PostMapping("/remove-person")
-    public ResponseEntity<ApiResponse<TaskDto>> removePerson(@Valid @RequestBody AssignPerson dto) {
-        TaskDto updated = taskService.removePerson(dto);
+    @PostMapping("/{taskId}/remove-person/{personId}")
+    public ResponseEntity<ApiResponse<TaskDto>> removePerson(@PathVariable Long taskId, @PathVariable Long personId) {
+        TaskDto updated = taskService.removePerson(taskId, personId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<TaskDto>builder()
                         .success(true)
@@ -149,9 +148,9 @@ public class RestTaskController {
                         .build());
     }
 
-    @PostMapping("/remove-project")
-    public ResponseEntity<ApiResponse<TaskDto>> removeProject(@Valid @RequestBody AssignProject dto) {
-        TaskDto updated = taskService.removeProject(dto);
+    @PostMapping("/{taskId}/remove-project/{projectId}")
+    public ResponseEntity<ApiResponse<TaskDto>> removeProject(@PathVariable Long taskId, @PathVariable Long projectId) {
+        TaskDto updated = taskService.removeProject(taskId, projectId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<TaskDto>builder()
                         .success(true)

@@ -1,11 +1,6 @@
 package com.example.demo.rest;
 
-import com.example.demo.department.dto.request.AssignCompanyDto;
-import com.example.demo.department.dto.request.AssignParentDto;
-import com.example.demo.department.dto.request.CreateDepartmentDto;
-import com.example.demo.department.dto.request.UpdateDepartmentDto;
-import com.example.demo.department.dto.response.BasicDepartmentDto;
-import com.example.demo.department.dto.response.DepartmentDto;
+import com.example.demo.dto.DepartmentDto;
 import com.example.demo.service.DepartmentService;
 import com.example.demo.shared.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -37,7 +32,7 @@ public class RestDepartmentController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<DepartmentDto>> createDepartment(@Valid @RequestBody CreateDepartmentDto department){
+    public ResponseEntity<ApiResponse<DepartmentDto>> createDepartment(@Valid @RequestBody DepartmentDto department){
         DepartmentDto created = departmentService.createDepartment(department);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<DepartmentDto>builder()
@@ -48,7 +43,7 @@ public class RestDepartmentController {
     }
 
     @PutMapping()
-    public ResponseEntity<ApiResponse<DepartmentDto>> updateDepartment(@Valid @RequestBody UpdateDepartmentDto departmentDto){
+    public ResponseEntity<ApiResponse<DepartmentDto>> updateDepartment(@Valid @RequestBody DepartmentDto departmentDto){
         DepartmentDto updated = departmentService.updateDepartment(departmentDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<DepartmentDto>builder()
@@ -92,10 +87,10 @@ public class RestDepartmentController {
     }
 
     @GetMapping("/{companyId}/by-company")
-    public ResponseEntity<ApiResponse<List<BasicDepartmentDto>>> getDepartmentsByCompanyId(@PathVariable Long companyId){
-        List<BasicDepartmentDto> departments = departmentService.GetAllDepartmentsByCompanyId(companyId);
+    public ResponseEntity<ApiResponse<List<DepartmentDto>>> getDepartmentsByCompanyId(@PathVariable Long companyId){
+        List<DepartmentDto> departments = departmentService.getAllDepartmentsByCompanyId(companyId);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<List<BasicDepartmentDto>>builder()
+                .body(ApiResponse.<List<DepartmentDto>>builder()
                         .success(true)
                         .message("Lấy departments theo công ty thành công")
                         .data(departments)
@@ -103,19 +98,19 @@ public class RestDepartmentController {
     }
 
     @GetMapping("/{parentId}/by-parent")
-    public ResponseEntity<ApiResponse<List<BasicDepartmentDto>>> getDepartmentsByParentId(@PathVariable Long parentId){
-        List<BasicDepartmentDto> departments = departmentService.getAllDepartmentsByParentsId(parentId);
+    public ResponseEntity<ApiResponse<List<DepartmentDto>>> getDepartmentsByParentId(@PathVariable Long parentId){
+        List<DepartmentDto> departments = departmentService.getAllDepartmentsByParentsId(parentId);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.<List<BasicDepartmentDto>>builder()
+                .body(ApiResponse.<List<DepartmentDto>>builder()
                         .success(true)
                         .message("Lấy departments con thành công")
                         .data(departments)
                         .build());
     }
 
-    @PutMapping("/assign-company")
-    public ResponseEntity<ApiResponse<DepartmentDto>> assignCompany(@Valid @RequestBody AssignCompanyDto assignCompanyDto){
-        DepartmentDto assigned = departmentService.assignCompany(assignCompanyDto);
+    @PutMapping("/{departmentId}/assign-company/{companyId}")
+    public ResponseEntity<ApiResponse<DepartmentDto>> assignCompany(@PathVariable Long departmentId, @PathVariable Long companyId){
+        DepartmentDto assigned = departmentService.assignCompany(departmentId, companyId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<DepartmentDto>builder()
                         .success(true)
@@ -124,9 +119,9 @@ public class RestDepartmentController {
                         .build());
     }
 
-    @PutMapping("/assign-parent")
-    public ResponseEntity<ApiResponse<DepartmentDto>> assignParent(@Valid @RequestBody AssignParentDto assignParentDto){
-        DepartmentDto assigned = departmentService.assignParent(assignParentDto);
+    @PutMapping("/{departmentId}/assign-parent/{parentId}")
+    public ResponseEntity<ApiResponse<DepartmentDto>> assignParent(@PathVariable Long departmentId, @PathVariable Long parentId){
+        DepartmentDto assigned = departmentService.assignParent(departmentId, parentId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<DepartmentDto>builder()
                         .success(true)

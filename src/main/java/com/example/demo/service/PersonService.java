@@ -1,11 +1,9 @@
 package com.example.demo.service;
 
-import com.example.demo.person.dto.request.AssignCompanyDto;
-import com.example.demo.person.dto.request.CreatePersonDto;
-import com.example.demo.person.dto.request.UpdatePersonDto;
-import com.example.demo.person.dto.response.PersonDto;
+import com.example.demo.dto.PersonDto;
 import com.example.demo.shared.response.PagedResponse;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,10 +16,10 @@ public interface PersonService {
     PersonDto getPersonById(Long id);
     PersonDto getPersonByPhoneNumber(String phoneNumber);
     PersonDto getPersonByUserId(Long userId);
-    PersonDto createPerson(CreatePersonDto person);
-    PersonDto updatePerson(UpdatePersonDto person);
+    PersonDto createPerson(PersonDto person);
+    PersonDto updatePerson(PersonDto person);
     PersonDto deletePersonById(Long id);
-    PersonDto assignCompany(AssignCompanyDto dto);
-    String uploadAvatar(Long personId, org.springframework.web.multipart.MultipartFile file);
+    PersonDto assignCompany(Long personId, Long companyId);
+    String uploadAvatar(Long personId, MultipartFile file);
     void removeAvatar(Long personId);
 }

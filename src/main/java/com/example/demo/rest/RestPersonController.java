@@ -1,9 +1,6 @@
 package com.example.demo.rest;
 
-import com.example.demo.person.dto.request.AssignCompanyDto;
-import com.example.demo.person.dto.request.CreatePersonDto;
-import com.example.demo.person.dto.request.UpdatePersonDto;
-import com.example.demo.person.dto.response.PersonDto;
+import com.example.demo.dto.PersonDto;
 import com.example.demo.service.PersonService;
 import com.example.demo.shared.request.PaginationRequest;
 import com.example.demo.shared.response.ApiResponse;
@@ -60,7 +57,7 @@ public class RestPersonController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<PersonDto>> createPerson(@Valid @RequestBody CreatePersonDto person){
+    public ResponseEntity<ApiResponse<PersonDto>> createPerson(@Valid @RequestBody PersonDto person){
         PersonDto created = personService.createPerson(person);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<PersonDto>builder()
@@ -71,7 +68,7 @@ public class RestPersonController {
     }
 
     @PutMapping()
-    public ResponseEntity<ApiResponse<PersonDto>> updatePerson(@Valid @RequestBody UpdatePersonDto personDto){
+    public ResponseEntity<ApiResponse<PersonDto>> updatePerson(@Valid @RequestBody PersonDto personDto){
         PersonDto updated = personService.updatePerson(personDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<PersonDto>builder()
@@ -92,9 +89,9 @@ public class RestPersonController {
                         .build());
     }
 
-    @PutMapping("/assign-company")
-    public ResponseEntity<ApiResponse<PersonDto>> assignCompany(@Valid @RequestBody AssignCompanyDto assignCompanyDto){
-        PersonDto assigned = personService.assignCompany(assignCompanyDto);
+    @PutMapping("/{personId}/assign-company/{companyId}")
+    public ResponseEntity<ApiResponse<PersonDto>> assignCompany(@PathVariable Long personId, @PathVariable Long companyId){
+        PersonDto assigned = personService.assignCompany(personId, companyId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<PersonDto>builder()
                         .success(true)

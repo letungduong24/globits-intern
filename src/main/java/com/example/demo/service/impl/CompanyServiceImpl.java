@@ -3,12 +3,9 @@ package com.example.demo.service.impl;
 import com.example.demo.service.CompanyService;
 import com.example.demo.shared.exception.DuplicateResourceException;
 import com.example.demo.shared.exception.ResourceNotFoundException;
-import com.example.demo.company.dto.request.CreateCompanyDto;
-import com.example.demo.company.dto.response.CompanyDto;
-import com.example.demo.company.dto.request.UpdateCompanyDto;
+import com.example.demo.dto.CompanyDto;
 import com.example.demo.domain.Company;
 import com.example.demo.repositories.CompanyRepository;
-import com.example.demo.company.dto.CompanyMapper;
 import com.example.demo.shared.response.PagedResponse;
 import com.example.demo.shared.util.PagedUtil;
 import org.springframework.data.domain.Page;
@@ -21,79 +18,84 @@ import java.util.List;
 public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
-    private final CompanyMapper companyMapper;
 
-    public CompanyServiceImpl(CompanyRepository companyRepository, CompanyMapper companyMapper) {
+    public CompanyServiceImpl(CompanyRepository companyRepository) {
         this.companyRepository = companyRepository;
-        this.companyMapper = companyMapper;
     }
 
     @Override
     public List<CompanyDto> getAllCompanies() {
-        return companyMapper.toDTOs(companyRepository.findAll());
+        return companyRepository.findAllAsDto();
     }
 
     @Override
     public PagedResponse<CompanyDto> getAllCompanies(Pageable pageable){
         Page<Company> page = companyRepository.findAll(pageable);
-        List<CompanyDto> contentMapped = companyMapper.toDTOs(page.getContent());
+        List<CompanyDto> contentMapped = companyRepository.findAllAsDto();
 
         return PagedUtil.ToPagedResponse(page, contentMapped);
     }
 
     @Override
     public CompanyDto getCompanyById(Long id) {
-        Company company = companyRepository.findById(id)
+        return companyRepository.findByIdAsDto(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công ty"));
-        return companyMapper.toDTO(company);
     }
 
     @Override
     public CompanyDto getCompanyByCode(String code) {
-        Company company = companyRepository.findByCode(code)
+        return companyRepository.findByCodeAsDto(code)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công ty"));
-        return companyMapper.toDTO(company);
     }
 
     @Override
     public List<CompanyDto> getCompaniesByName(String name) {
-        return companyMapper.toDTOs(companyRepository.findByName(name));
+        return companyRepository.findByNameAsDto(name);
     }
 
     @Override
-    public CompanyDto createCompany(CreateCompanyDto companyDto) {
+    public CompanyDto createCompany(CompanyDto companyDto) {
         if (companyRepository.existsByCode(companyDto.getCode())) {
             throw new DuplicateResourceException("Mã công ty đã tồn tại");
         }
         
-        Company company = companyMapper.toEntity(companyDto);
+        Company company = companyDto.toEntity();
         Company saved = companyRepository.save(company);
-        return companyMapper.toDTO(saved);
+        return CompanyDto.fromEntity(saved);
     }
 
     @Override
-    public CompanyDto updateCompany(UpdateCompanyDto companyDto) {
-        Company company = companyRepository.findById(companyDto.getId())
+    public CompanyDto updateCompany(CompanyDto companyDto) {
+        Company existingCompany = companyRepository.findById(companyDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công ty"));
         
-        if (companyDto.getCode() != null && !companyDto.getCode().equals(company.getCode())) {
+        if (companyDto.getCode() != null && !companyDto.getCode().equals(existingCompany.getCode())) {
             if (companyRepository.existsByCode(companyDto.getCode())) {
                 throw new DuplicateResourceException("Mã công ty đã tồn tại");
             }
         }
         
-        companyMapper.updateEntity(company, companyDto);
-        Company saved = companyRepository.save(company);
-        return companyMapper.toDTO(saved);
+        // Cập nhật các trường
+        if (companyDto.getName() != null) {
+            existingCompany.setName(companyDto.getName());
+        }
+        if (companyDto.getAddress() != null) {
+            existingCompany.setAddress(companyDto.getAddress());
+        }
+        if (companyDto.getCode() != null) {
+            existingCompany.setCode(companyDto.getCode());
+        }
+        
+        Company saved = companyRepository.save(existingCompany);
+        return CompanyDto.fromEntity(saved);
     }
 
     @Override
     public CompanyDto deleteCompanyById(Long id) {
-        Company company = companyRepository.findById(id)
+        CompanyDto dto = companyRepository.findByIdAsDto(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công ty"));
-
-        CompanyDto dto = companyMapper.toDTO(company);
-        companyRepository.delete(company);
+        
+        companyRepository.deleteById(id);
         return dto;
     }
 

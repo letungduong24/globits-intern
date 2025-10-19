@@ -1,8 +1,6 @@
 package com.example.demo.rest;
 
-import com.example.demo.company.dto.request.CreateCompanyDto;
-import com.example.demo.company.dto.response.CompanyDto;
-import com.example.demo.company.dto.request.UpdateCompanyDto;
+import com.example.demo.dto.CompanyDto;
 import com.example.demo.service.CompanyService;
 import com.example.demo.shared.request.PaginationRequest;
 import com.example.demo.shared.response.ApiResponse;
@@ -52,7 +50,7 @@ public class RestCompanyController {
 
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<CompanyDto>> createCompany(@Valid @RequestBody CreateCompanyDto company){
+    public ResponseEntity<ApiResponse<CompanyDto>> createCompany(@Valid @RequestBody CompanyDto company){
         CompanyDto created = companyService.createCompany(company);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<CompanyDto>builder()
@@ -63,7 +61,7 @@ public class RestCompanyController {
     }
 
     @PutMapping()
-    public ResponseEntity<ApiResponse<CompanyDto>> updateCompany(@Valid @RequestBody UpdateCompanyDto companyDto){
+    public ResponseEntity<ApiResponse<CompanyDto>> updateCompany(@Valid @RequestBody CompanyDto companyDto){
         CompanyDto updated = companyService.updateCompany(companyDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<CompanyDto>builder()

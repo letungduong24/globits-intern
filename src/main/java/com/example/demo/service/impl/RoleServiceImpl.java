@@ -1,10 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.repositories.RoleRepository;
-import com.example.demo.role.dto.request.CreateRoleDto;
-import com.example.demo.role.dto.response.RoleDto;
-import com.example.demo.role.dto.RoleMapper;
-import com.example.demo.role.dto.request.UpdateRoleDto;
+import com.example.demo.dto.RoleDto;
 import com.example.demo.domain.Role;
 import com.example.demo.service.RoleService;
 import com.example.demo.shared.exception.DuplicateResourceException;
@@ -16,26 +13,24 @@ import java.util.List;
 @Component
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
-    private final RoleMapper roleMapper;
 
-    public RoleServiceImpl(RoleRepository roleRepository, RoleMapper roleMapper) {
+    public RoleServiceImpl(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
-        this.roleMapper = roleMapper;
     }
 
     @Override
-    public RoleDto createRole(CreateRoleDto createRoleDto) {
-        roleRepository.findByRoleIgnoreCase(createRoleDto.getRole()).ifPresent(role -> {
+    public RoleDto createRole(RoleDto roleDto) {
+        roleRepository.findByRoleIgnoreCase(roleDto.getRole()).ifPresent(role -> {
             throw new DuplicateResourceException("Role đã tồn tại");
         });
 
-        Role role = roleMapper.toEntity(createRoleDto);
-        roleRepository.save(role);
-        return roleMapper.toDTO(role);
+        Role role = roleDto.toEntity();
+        Role saved = roleRepository.save(role);
+        return RoleDto.fromEntity(saved);
     }
 
     @Override
-    public RoleDto updateRole(UpdateRoleDto roleDto) {
+    public RoleDto updateRole(RoleDto roleDto) {
         Role role = roleRepository.findById(roleDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy role"));
 
@@ -47,38 +42,41 @@ public class RoleServiceImpl implements RoleService {
             throw new DuplicateResourceException("Role đã tồn tại");
         }
 
-        roleMapper.updateEntity(role, roleDto);
-        roleRepository.save(role);
-        return roleMapper.toDTO(role);
+        // Cập nhật các trường
+        if (roleDto.getRole() != null) {
+            role.setRole(roleDto.getRole());
+        }
+        if (roleDto.getDescription() != null) {
+            role.setDescription(roleDto.getDescription());
+        }
+        
+        Role saved = roleRepository.save(role);
+        return RoleDto.fromEntity(saved);
     }
 
     @Override
     public List<RoleDto> getAllRoles() {
-
-        return roleMapper.toDTOs(roleRepository.findAll());
+        return roleRepository.findAllAsDto();
     }
 
     @Override
     public RoleDto getRoleById(Long id) {
-        Role role = roleRepository.findById(id)
+        return roleRepository.findByIdAsDto(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy role"));
-        return roleMapper.toDTO(role);
     }
 
     @Override
     public RoleDto getRoleByRoleName(String name) {
-        Role role = roleRepository.findByRoleIgnoreCase(name)
+        return roleRepository.findByRoleIgnoreCaseAsDto(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy role"));
-        return roleMapper.toDTO(role);
     }
 
     @Override
     public RoleDto deleteRoleById(Long id) {
-        Role role = roleRepository.findById(id)
+        RoleDto dto = roleRepository.findByIdAsDto(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy role"));
-
-        RoleDto dto = roleMapper.toDTO(role);
-        roleRepository.delete(role);
+        
+        roleRepository.deleteById(id);
         return dto;
     }
 }

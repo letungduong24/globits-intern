@@ -1,11 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.department.dto.request.AssignCompanyDto;
-import com.example.demo.department.dto.request.AssignParentDto;
-import com.example.demo.department.dto.request.CreateDepartmentDto;
-import com.example.demo.department.dto.request.UpdateDepartmentDto;
-import com.example.demo.department.dto.response.BasicDepartmentDto;
-import com.example.demo.department.dto.response.DepartmentDto;
+import com.example.demo.dto.DepartmentDto;
 
 import java.util.List;
 
@@ -13,11 +8,11 @@ public interface DepartmentService {
     List<DepartmentDto> getAllDepartments();
     DepartmentDto getDepartmentById(Long id);
     DepartmentDto getDepartmentByCode(String code);
-    List<BasicDepartmentDto> GetAllDepartmentsByCompanyId(Long id);
-    List<BasicDepartmentDto> getAllDepartmentsByParentsId(Long id);
-    DepartmentDto createDepartment(CreateDepartmentDto departmentDto);
-    DepartmentDto updateDepartment(UpdateDepartmentDto departmentDto);
+    List<DepartmentDto> getAllDepartmentsByCompanyId(Long id);
+    List<DepartmentDto> getAllDepartmentsByParentsId(Long id);
+    DepartmentDto createDepartment(DepartmentDto departmentDto);
+    DepartmentDto updateDepartment(DepartmentDto departmentDto);
     DepartmentDto deleteDepartment(Long id);
-    DepartmentDto assignCompany(AssignCompanyDto dto);
-    DepartmentDto assignParent(AssignParentDto dto);
+    DepartmentDto assignCompany(Long departmentId, Long companyId);
+    DepartmentDto assignParent(Long departmentId, Long parentId);
 }

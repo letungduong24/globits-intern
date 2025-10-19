@@ -4,13 +4,7 @@ import com.example.demo.repositories.CompanyRepository;
 import com.example.demo.service.DepartmentService;
 import com.example.demo.domain.Company;
 import com.example.demo.repositories.DepartmentRepository;
-import com.example.demo.department.dto.*;
-import com.example.demo.department.dto.request.AssignCompanyDto;
-import com.example.demo.department.dto.request.AssignParentDto;
-import com.example.demo.department.dto.request.CreateDepartmentDto;
-import com.example.demo.department.dto.request.UpdateDepartmentDto;
-import com.example.demo.department.dto.response.BasicDepartmentDto;
-import com.example.demo.department.dto.response.DepartmentDto;
+import com.example.demo.dto.DepartmentDto;
 import com.example.demo.domain.Department;
 import com.example.demo.shared.exception.DuplicateResourceException;
 import com.example.demo.shared.exception.ResourceNotFoundException;
@@ -23,56 +17,47 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final CompanyRepository companyRepository;
-    private final DepartmentMapper departmentMapper;
 
     public DepartmentServiceImpl(DepartmentRepository departmentRepository, 
-                                  CompanyRepository companyRepository,
-                                  DepartmentMapper departmentMapper) {
+                                  CompanyRepository companyRepository) {
         this.departmentRepository = departmentRepository;
         this.companyRepository = companyRepository;
-        this.departmentMapper = departmentMapper;
     }
 
     @Override
     public List<DepartmentDto> getAllDepartments() {
-        return departmentMapper.toDTOs(departmentRepository.findAll());
+        return departmentRepository.findAllAsDto();
     }
 
     @Override
     public DepartmentDto getDepartmentById(Long id) {
-        Department department = departmentRepository.findById(id)
+        return departmentRepository.findByIdAsDto(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban"));
-        return departmentMapper.toDTO(department);
     }
 
     @Override
     public DepartmentDto getDepartmentByCode(String code) {
-        Department department = departmentRepository.findByCode(code);
-        if (department == null) {
-            throw new ResourceNotFoundException("Không tìm thấy phòng ban");
-        }
-        return departmentMapper.toDTO(department);
+        return departmentRepository.findByCodeAsDto(code)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban"));
     }
 
     @Override
-    public List<BasicDepartmentDto> GetAllDepartmentsByCompanyId(Long id) {
-        List<Department> departments = departmentRepository.findByCompanyId(id);
-        return departmentMapper.toBasicDTOs(departments);
+    public List<DepartmentDto> getAllDepartmentsByCompanyId(Long id) {
+        return departmentRepository.findByCompanyIdAsDto(id);
     }
 
     @Override
-    public List<BasicDepartmentDto> getAllDepartmentsByParentsId(Long id) {
-        List<Department> departments = departmentRepository.findByParentId(id);
-        return departmentMapper.toBasicDTOs(departments);
+    public List<DepartmentDto> getAllDepartmentsByParentsId(Long id) {
+        return departmentRepository.findByParentIdAsDto(id);
     }
 
     @Override
-    public DepartmentDto createDepartment(CreateDepartmentDto departmentDto) {
+    public DepartmentDto createDepartment(DepartmentDto departmentDto) {
         if (departmentRepository.existsByCode(departmentDto.getCode())) {
             throw new DuplicateResourceException("Mã phòng ban đã tồn tại");
         }
 
-        Department department = departmentMapper.toEntity(departmentDto);
+        Department department = departmentDto.toEntity();
 
         // Set company if provided
         if (departmentDto.getCompanyId() != null) {
@@ -89,11 +74,11 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
 
         Department saved = departmentRepository.save(department);
-        return departmentMapper.toDTO(saved);
+        return DepartmentDto.fromEntity(saved);
     }
 
     @Override
-    public DepartmentDto updateDepartment(UpdateDepartmentDto departmentDto) {
+    public DepartmentDto updateDepartment(DepartmentDto departmentDto) {
         Department department = departmentRepository.findById(departmentDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban"));
 
@@ -103,55 +88,61 @@ public class DepartmentServiceImpl implements DepartmentService {
             }
         }
 
-        departmentMapper.updateEntity(department, departmentDto);
+        // Cập nhật các trường
+        if (departmentDto.getName() != null) {
+            department.setName(departmentDto.getName());
+        }
+        if (departmentDto.getCode() != null) {
+            department.setCode(departmentDto.getCode());
+        }
+        
         Department saved = departmentRepository.save(department);
-        return departmentMapper.toDTO(saved);
+        return DepartmentDto.fromEntity(saved);
     }
 
     @Override
     public DepartmentDto deleteDepartment(Long id) {
-        Department department = departmentRepository.findById(id)
+        DepartmentDto dto = departmentRepository.findByIdAsDto(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban"));
-
-        DepartmentDto dto = departmentMapper.toDTO(department);
-        departmentRepository.delete(department);
+        
+        departmentRepository.deleteById(id);
         return dto;
     }
 
     @Override
-    public DepartmentDto assignCompany(AssignCompanyDto dto) {
-        Department department = departmentRepository.findById(dto.getDepartmentId())
+    public DepartmentDto assignCompany(Long departmentId, Long companyId) {
+        Department department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban"));
-        Company company = companyRepository.findById(dto.getCompanyId())
+        Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công ty"));
         
-        if (department.getCompany() != null && department.getCompany().getId().equals(dto.getCompanyId())) {
+        if (department.getCompany() != null && department.getCompany().getId().equals(companyId)) {
             throw new DuplicateResourceException("Phòng ban đã thuộc công ty này");
         }
         
         department.setCompany(company);
         Department saved = departmentRepository.save(department);
-        return departmentMapper.toDTO(saved);
+        return DepartmentDto.fromEntity(saved);
     }
 
     @Override
-    public DepartmentDto assignParent(AssignParentDto dto) {
-        Department department = departmentRepository.findById(dto.getDepartmentId())
+    public DepartmentDto assignParent(Long departmentId, Long parentId) {
+        Department department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban"));
-        Department parent = departmentRepository.findById(dto.getParentId())
+        Department parent = departmentRepository.findById(parentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phòng ban cha"));
         
-        if (department.getParent() != null && department.getParent().getId().equals(dto.getParentId())) {
+        if (department.getParent() != null && department.getParent().getId().equals(parentId)) {
             throw new DuplicateResourceException("Phòng ban đã có phòng ban cha này");
         }
         
-        if (dto.getDepartmentId().equals(dto.getParentId())) {
+        if (departmentId.equals(parentId)) {
             throw new DuplicateResourceException("Phòng ban không thể là cha của chính nó");
         }
         
         department.setParent(parent);
         Department saved = departmentRepository.save(department);
-        return departmentMapper.toDTO(saved);
+        return DepartmentDto.fromEntity(saved);
     }
 }
 

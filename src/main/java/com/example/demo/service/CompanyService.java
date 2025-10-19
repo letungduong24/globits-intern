@@ -1,8 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.company.dto.request.CreateCompanyDto;
-import com.example.demo.company.dto.response.CompanyDto;
-import com.example.demo.company.dto.request.UpdateCompanyDto;
+import com.example.demo.dto.CompanyDto;
 import com.example.demo.shared.response.PagedResponse;
 import org.springframework.data.domain.Pageable;
 
@@ -14,8 +12,8 @@ public interface CompanyService {
     List<CompanyDto> getCompaniesByName(String name);
     CompanyDto getCompanyById(Long id);
     CompanyDto getCompanyByCode(String code);
-    CompanyDto createCompany(CreateCompanyDto company);
-    CompanyDto updateCompany(UpdateCompanyDto company);
+    CompanyDto createCompany(CompanyDto company);
+    CompanyDto updateCompany(CompanyDto company);
     CompanyDto deleteCompanyById(Long id);
     boolean existsCompanyById(Long id);
 }

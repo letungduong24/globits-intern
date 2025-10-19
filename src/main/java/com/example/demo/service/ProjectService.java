@@ -1,25 +1,23 @@
 package com.example.demo.service;
 
-import com.example.demo.project.dto.request.*;
-import com.example.demo.project.dto.response.BasicProjectDto;
-import com.example.demo.project.dto.response.ProjectDto;
+import com.example.demo.dto.ProjectDto;
 import com.example.demo.shared.response.PagedResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface ProjectService {
-    List<BasicProjectDto> getAllProjects();
-    PagedResponse<BasicProjectDto> getAllProjects(Pageable pageable);
+    List<ProjectDto> getAllProjects();
+    PagedResponse<ProjectDto> getAllProjects(Pageable pageable);
     ProjectDto getProjectById(Long id);
     ProjectDto getProjectByCode(String code);
-    List<BasicProjectDto> getProjectsByName(String name);
-    List<BasicProjectDto> getProjectsByCompanyId(Long companyId);
-    ProjectDto createProject(CreateProjectDto projectDto);
-    ProjectDto updateProject(UpdateProjectDto projectDto);
+    List<ProjectDto> getProjectsByName(String name);
+    List<ProjectDto> getProjectsByCompanyId(Long companyId);
+    ProjectDto createProject(ProjectDto projectDto);
+    ProjectDto updateProject(ProjectDto projectDto);
     ProjectDto deleteProject(Long id);
-    ProjectDto assignCompany(AssignCompanyDto dto);
-    ProjectDto assignPerson(AssignPersonDto dto);
-    ProjectDto removePerson(AssignPersonDto dto);
+    ProjectDto assignCompany(Long projectId, Long companyId);
+    ProjectDto assignPerson(Long projectId, Long personId);
+    ProjectDto removePerson(Long projectId, Long personId);
 }
 

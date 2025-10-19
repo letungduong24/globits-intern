@@ -11,11 +11,9 @@ import com.example.demo.shared.request.PaginationRequest;
 import com.example.demo.shared.response.PagedResponse;
 import com.example.demo.shared.util.PagedUtil;
 import com.example.demo.repositories.TaskRepository;
-import com.example.demo.task.dto.TaskMapper;
-import com.example.demo.task.dto.request.*;
-import com.example.demo.task.dto.response.TaskDto;
-import com.example.demo.task.specification.TaskSpecification;
-import com.example.demo.task.specification.TaskSpecificationRequest;
+import com.example.demo.dto.TaskDto;
+import com.example.demo.specification.TaskSpecification;
+import com.example.demo.specification.request.TaskSpecificationRequest;
 import com.example.demo.domain.Task;
 import jakarta.transaction.Transactional;
 import org.apache.poi.ss.usermodel.*;
@@ -35,25 +33,22 @@ import java.util.List;
 @Service
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
-    private final TaskMapper taskMapper;
     private final PersonRepository personRepository;
     private final ProjectRepository projectRepository;
 
     public TaskServiceImpl(
             TaskRepository taskRepository,
-            TaskMapper taskMapper,
             PersonRepository personRepository,
             ProjectRepository projectRepository
     ) {
         this.taskRepository = taskRepository;
-        this.taskMapper = taskMapper;
         this.personRepository = personRepository;
         this.projectRepository = projectRepository;
     }
 
     @Override
     public List<TaskDto> getAllTasks() {
-        return taskMapper.toDTOs((taskRepository.findAll()));
+        return taskRepository.findAllAsDto();
     }
 
     @Override
@@ -68,74 +63,89 @@ public class TaskServiceImpl implements TaskService {
                 taskSpecificationRequest.getName()
         );
         Page<Task> taskPage = taskRepository.findAll(spec, pageable);
-        List<TaskDto> contentMapped = taskMapper.toDTOs(taskPage.getContent());
+        List<TaskDto> contentMapped = taskRepository.findAllAsDto();
         return PagedUtil.ToPagedResponse(taskPage, contentMapped);
     }
 
     @Override
     public TaskDto getTaskById(Long id) {
-        Task task = taskRepository.findById(id)
+        return taskRepository.findByIdAsDto(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy task"));
-        return taskMapper.toDTO(task);
     }
 
     @Override
     public List<TaskDto> getTasksByPersonId(Long personId) {
-        List<Task> tasks = taskRepository.findByPersonId(personId);
-        return taskMapper.toDTOs(tasks);
+        return taskRepository.findByPersonIdAsDto(personId);
     }
 
     @Override
     public List<TaskDto> getTasksByProjectId(Long projectId) {
-        List<Task> tasks = taskRepository.findByProjectId(projectId);
-        return taskMapper.toDTOs(tasks);
+        return taskRepository.findByProjectIdAsDto(projectId);
     }
 
     @Override
     @Transactional
-    public TaskDto createTask(CreateTaskDto createTaskDto) {
-        Task task =  taskMapper.toEntity(createTaskDto);
-        Project project = projectRepository.findById(createTaskDto.getProjectId())
+    public TaskDto createTask(TaskDto taskDto) {
+        Task task = taskDto.toEntity();
+        Project project = projectRepository.findById(taskDto.getProjectId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy dự án"));
         task.setProject(project);
-        Person person = personRepository.findById(createTaskDto.getPersonId())
+        Person person = personRepository.findById(taskDto.getPersonId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy person"));
         if (!project.getPersons().contains(person)) {
             throw new ResourceNotFoundException("Person không thuộc dự án này");
         }
         task.setPerson(person);
         Task saved = taskRepository.save(task);
-        return taskMapper.toDTO(saved);
+        return TaskDto.fromEntity(saved);
     }
 
     @Override
     @Transactional
-    public TaskDto updateTask(UpdateTaskDto updateTaskDto) {
-        Task task = taskRepository.findById(updateTaskDto.getId())
+    public TaskDto updateTask(TaskDto taskDto) {
+        Task task = taskRepository.findById(taskDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy task"));
 
-        taskMapper.updateEntity(task, updateTaskDto);
+        // Cập nhật các trường
+        if (taskDto.getName() != null) {
+            task.setName(taskDto.getName());
+        }
+        if (taskDto.getStartTime() != null) {
+            task.setStartTime(taskDto.getStartTime());
+        }
+        if (taskDto.getEndTime() != null) {
+            task.setEndTime(taskDto.getEndTime());
+        }
+        if (taskDto.getDescription() != null) {
+            task.setDescription(taskDto.getDescription());
+        }
+        if (taskDto.getPriority() != null) {
+            task.setPriority(taskDto.getPriority());
+        }
+        if (taskDto.getStatus() != null) {
+            task.setStatus(taskDto.getStatus());
+        }
+        
         Task saved = taskRepository.save(task);
-        return taskMapper.toDTO(saved);
+        return TaskDto.fromEntity(saved);
     }
 
     @Override
     @Transactional
     public TaskDto deleteTask(Long id) {
-        Task task = taskRepository.findById(id)
+        TaskDto dto = taskRepository.findByIdAsDto(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy task"));
-
-        TaskDto dto = taskMapper.toDTO(task);
-        taskRepository.delete(task);
+        
+        taskRepository.deleteById(id);
         return dto;
     }
 
     @Override
     @Transactional
-    public TaskDto assignPerson(AssignPerson dto) {
-        Task task = taskRepository.findById(dto.getTaskId())
+    public TaskDto assignPerson(Long taskId, Long personId) {
+        Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy task"));
-        Person person = personRepository.findById(dto.getPersonId())
+        Person person = personRepository.findById(personId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy person"));
 
         if (task.getProject() == null) {
@@ -158,21 +168,21 @@ public class TaskServiceImpl implements TaskService {
             throw new ResourceNotFoundException("Person không thuộc dự án này");
         }
 
-        if (task.getPerson() != null && task.getPerson().getId().equals(dto.getPersonId())) {
+        if (task.getPerson() != null && task.getPerson().getId().equals(personId)) {
             throw new DuplicateResourceException("Task đã được gán cho person này");
         }
 
         task.setPerson(person);
         Task saved = taskRepository.save(task);
-        return taskMapper.toDTO(saved);
+        return TaskDto.fromEntity(saved);
     }
 
     @Override
     @Transactional
-    public TaskDto assignProject(AssignProject dto) {
-        Task task = taskRepository.findById(dto.getTaskId())
+    public TaskDto assignProject(Long taskId, Long projectId) {
+        Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy task"));
-        Project project = projectRepository.findById(dto.getProjectId())
+        Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy dự án"));
 
         if (task.getPerson() != null) {
@@ -193,51 +203,50 @@ public class TaskServiceImpl implements TaskService {
             }
         }
 
-        if (task.getProject() != null && task.getProject().getId().equals(dto.getProjectId())) {
+        if (task.getProject() != null && task.getProject().getId().equals(projectId)) {
             throw new DuplicateResourceException("Task đã được gán cho dự án này");
         }
 
         task.setProject(project);
         Task saved = taskRepository.save(task);
-        return taskMapper.toDTO(saved);
+        return TaskDto.fromEntity(saved);
     }
 
     @Override
     @Transactional
-    public TaskDto removePerson(AssignPerson dto) {
-        Task task = taskRepository.findById(dto.getTaskId())
+    public TaskDto removePerson(Long taskId, Long personId) {
+        Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy task"));
 
-        if (task.getPerson() == null || !task.getPerson().getId().equals(dto.getPersonId())) {
+        if (task.getPerson() == null || !task.getPerson().getId().equals(personId)) {
             throw new ResourceNotFoundException("Person không thuộc task này");
         }
 
         task.setPerson(null);
         Task saved = taskRepository.save(task);
-        return taskMapper.toDTO(saved);
+        return TaskDto.fromEntity(saved);
     }
 
     @Override
     @Transactional
-    public TaskDto removeProject(AssignProject dto) {
-        Task task = taskRepository.findById(dto.getTaskId())
+    public TaskDto removeProject(Long taskId, Long projectId) {
+        Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy task"));
 
-        if (task.getProject() == null || !task.getProject().getId().equals(dto.getProjectId())) {
+        if (task.getProject() == null || !task.getProject().getId().equals(projectId)) {
             throw new ResourceNotFoundException("Dự án không thuộc task này");
         }
 
         task.setProject(null);
         Task saved = taskRepository.save(task);
-        return taskMapper.toDTO(saved);
+        return TaskDto.fromEntity(saved);
     }
 
     @Override
     public Resource exportTasksToExcel() {
         try {
             // Get all tasks without pagination
-            List<Task> tasks = taskRepository.findAll();
-            List<TaskDto> taskDtos = taskMapper.toDTOs(tasks);
+            List<TaskDto> taskDtos = taskRepository.findAllAsDto();
 
             // Create workbook and sheet
             Workbook workbook = new XSSFWorkbook();
@@ -268,7 +277,7 @@ public class TaskServiceImpl implements TaskService {
                 Row row = sheet.createRow(rowNum++);
                 
                 // Project
-                row.createCell(0).setCellValue(task.getProject() != null ? task.getProject().getName() : "");
+                row.createCell(0).setCellValue(task.getProjectName() != null ? task.getProjectName() : "");
                 
                 // Description
                 row.createCell(1).setCellValue(task.getDescription() != null ? task.getDescription() : "");
@@ -286,7 +295,7 @@ public class TaskServiceImpl implements TaskService {
                 row.createCell(5).setCellValue(task.getStatus() != null ? task.getStatus().toString() : "");
                 
                 // Person
-                row.createCell(6).setCellValue(task.getPerson() != null ? task.getPerson().getFullName() : "");
+                row.createCell(6).setCellValue(task.getPersonName() != null ? task.getPersonName() : "");
             }
 
             // Auto-size columns

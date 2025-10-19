@@ -1,8 +1,6 @@
 package com.example.demo.rest;
 
-import com.example.demo.country.dto.request.CreateCountryDto;
-import com.example.demo.country.dto.response.CountryDto;
-import com.example.demo.country.dto.request.UpdateCountryDto;
+import com.example.demo.dto.CountryDto;
 import com.example.demo.service.CountryService;
 import com.example.demo.shared.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -45,7 +43,7 @@ public class RestCountryController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<CountryDto>>  createCountry(@Valid @RequestBody CreateCountryDto country){
+    public ResponseEntity<ApiResponse<CountryDto>>  createCountry(@Valid @RequestBody CountryDto country){
         CountryDto created = countryService.createCountry(country);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<CountryDto>builder()
@@ -57,9 +55,9 @@ public class RestCountryController {
     }
 
     @PutMapping()
-    public ResponseEntity<ApiResponse<CountryDto>>  updateCountry(@RequestBody UpdateCountryDto countryDto){
+    public ResponseEntity<ApiResponse<CountryDto>>  updateCountry(@Valid @RequestBody CountryDto countryDto){
         CountryDto updated = countryService.updateCountry(countryDto);
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<CountryDto>builder()
                         .success(true)
                         .message("Update country thành công")
@@ -70,7 +68,7 @@ public class RestCountryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<CountryDto>> deleteCountryById(@PathVariable Long id) {
         CountryDto deleted = countryService.deleteCountryById(id);
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<CountryDto>builder()
                         .success(true)
                         .message("Xoá country thành công")
