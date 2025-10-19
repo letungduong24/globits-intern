@@ -6,7 +6,7 @@ import com.example.demo.project.dto.request.CreateProjectDto;
 import com.example.demo.project.dto.response.BasicProjectDto;
 import com.example.demo.project.dto.request.UpdateProjectDto;
 import com.example.demo.project.dto.response.ProjectDto;
-import com.example.demo.project.entity.Project;
+import com.example.demo.domain.Project;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

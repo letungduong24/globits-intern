@@ -3,7 +3,7 @@ package com.example.demo.country.dto;
 import com.example.demo.country.dto.request.CreateCountryDto;
 import com.example.demo.country.dto.request.UpdateCountryDto;
 import com.example.demo.country.dto.response.CountryDto;
-import com.example.demo.country.entity.Country;
+import com.example.demo.domain.Country;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

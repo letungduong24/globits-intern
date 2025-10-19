@@ -4,7 +4,7 @@ import com.example.demo.department.dto.request.CreateDepartmentDto;
 import com.example.demo.department.dto.request.UpdateDepartmentDto;
 import com.example.demo.department.dto.response.BasicDepartmentDto;
 import com.example.demo.department.dto.response.DepartmentDto;
-import com.example.demo.department.entity.Department;
+import com.example.demo.domain.Department;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

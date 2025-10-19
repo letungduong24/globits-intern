@@ -1,6 +1,6 @@
 package com.example.demo.task.specification;
 
-import com.example.demo.task.entity.Task;
+import com.example.demo.domain.Task;
 import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.CriteriaBuilder;

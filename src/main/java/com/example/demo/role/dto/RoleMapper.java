@@ -3,7 +3,7 @@ package com.example.demo.role.dto;
 import com.example.demo.role.dto.request.CreateRoleDto;
 import com.example.demo.role.dto.request.UpdateRoleDto;
 import com.example.demo.role.dto.response.RoleDto;
-import com.example.demo.role.entity.Role;
+import com.example.demo.domain.Role;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

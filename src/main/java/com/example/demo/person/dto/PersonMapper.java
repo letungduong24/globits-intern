@@ -3,7 +3,7 @@ package com.example.demo.person.dto;
 import com.example.demo.person.dto.request.CreatePersonDto;
 import com.example.demo.person.dto.request.UpdatePersonDto;
 import com.example.demo.person.dto.response.PersonDto;
-import com.example.demo.person.entity.Person;
+import com.example.demo.domain.Person;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

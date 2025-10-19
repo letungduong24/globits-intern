@@ -1,13 +1,10 @@
 package com.example.demo.task.dto;
 
 import com.example.demo.person.dto.PersonMapper;
-import com.example.demo.person.dto.request.CreatePersonDto;
-import com.example.demo.person.dto.request.UpdatePersonDto;
-import com.example.demo.person.entity.Person;
 import com.example.demo.project.dto.ProjectMapper;
 import com.example.demo.task.dto.request.CreateTaskDto;
 import com.example.demo.task.dto.request.UpdateTaskDto;
-import com.example.demo.task.entity.Task;
+import com.example.demo.domain.Task;
 import com.example.demo.task.dto.response.TaskDto;
 import org.springframework.stereotype.Component;
 

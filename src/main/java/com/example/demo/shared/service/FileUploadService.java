@@ -28,25 +28,20 @@ public class FileUploadService {
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
     public String uploadAvatar(MultipartFile file) throws IOException {
-        // Validate file
         validateFile(file);
 
-        // Create upload directory if not exists
         Path uploadPath = Paths.get(uploadDir, "avatars");
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
-        // Generate unique filename
         String originalFilename = file.getOriginalFilename();
         String extension = getFileExtension(originalFilename);
         String uniqueFilename = UUID.randomUUID().toString() + "." + extension;
 
-        // Save file
         Path filePath = uploadPath.resolve(uniqueFilename);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        // Return relative path
         String relativePath = "uploads/avatars/" + uniqueFilename;
         log.info("File uploaded successfully: {}", relativePath);
         

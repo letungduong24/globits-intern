@@ -5,7 +5,7 @@ import com.example.demo.role.dto.RoleMapper;
 import com.example.demo.user.dto.request.CreateUserDto;
 import com.example.demo.user.dto.request.UpdateUserDto;
 import com.example.demo.user.dto.response.UserDto;
-import com.example.demo.user.entity.User;
+import com.example.demo.domain.User;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

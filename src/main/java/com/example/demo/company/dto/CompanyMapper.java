@@ -3,7 +3,7 @@ package com.example.demo.company.dto;
 import com.example.demo.company.dto.request.CreateCompanyDto;
 import com.example.demo.company.dto.request.UpdateCompanyDto;
 import com.example.demo.company.dto.response.CompanyDto;
-import com.example.demo.company.entity.Company;
+import com.example.demo.domain.Company;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
